@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class nationalID extends StatefulWidget {
   @override
@@ -8,7 +11,32 @@ class nationalID extends StatefulWidget {
 class _RegistrationPageState extends State<nationalID> {
   String _idCardNumber = '';
   String _idCardImagePath = '';
+  final imagepicker1 = ImagePicker();
+  File? imagefrontID, imagebackID;
 
+  Future<void> uploadImagefront() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) {
+      print("No Image chosen yet"); // replace Text with print
+    } else {
+      setState(() {
+        imagefrontID = File(pickedImage.path);
+      });
+    }
+  }
+
+  Future<void> uploadImageback() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) {
+      print("No Image chosen yet"); // replace Text with print
+    } else {
+      setState(() {
+        imagebackID = File(pickedImage.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +62,16 @@ class _RegistrationPageState extends State<nationalID> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: _idCardImagePath.isNotEmpty
-                    ? Image.asset(
-                  _idCardImagePath,
-                  fit: BoxFit.cover,
-                )
+                child: imagefrontID != null
+                    ? Image.file(imagefrontID!)
                     : Center(
-                  child: Text('No image selected'),
-                ),
+                        child: Text('No image selected'),
+                      ),
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: uploadImagefront,
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -79,19 +104,16 @@ class _RegistrationPageState extends State<nationalID> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: _idCardImagePath.isNotEmpty
-                    ? Image.asset(
-                  _idCardImagePath,
-                  fit: BoxFit.cover,
-                )
+                child: imagebackID != null
+                    ? Image.file(imagebackID!)
                     : Center(
-                  child: Text('No image selected'),
-                ),
+                        child: Text('No image selected'),
+                      ),
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: uploadImageback,
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -129,22 +151,24 @@ class _RegistrationPageState extends State<nationalID> {
               SizedBox(height: 32.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'select');
+                  },
                   child: Text(
                     'Next',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.0,),),
+                      fontSize: 20.0,
+                    ),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF000080),
                     textStyle: TextStyle(
                       fontSize: 40.0,
                     ),
                   ),
-
                 ),
               ),
-
             ],
           ),
         ),

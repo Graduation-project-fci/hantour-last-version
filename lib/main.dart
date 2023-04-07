@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: rating(),
+      home: fpage(),
       routes: {
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),

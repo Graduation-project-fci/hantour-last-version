@@ -13,7 +13,21 @@ class _RegistrationPageState extends State<driverLicense> {
   String _idCardNumber = '';
   String _idCardImagePath = '';
   final TextEditingController _dobController = TextEditingController();
-  File? image; // add ? for null safety
+  File? image1, image; // add ? for null safety
+
+  final imagepicker1 = ImagePicker();
+
+  Future<void> uploadImage1() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) {
+      print("No Image chosen yet"); // replace Text with print
+    } else {
+      setState(() {
+        image1 = File(pickedImage.path);
+      });
+    }
+  }
 
   final imagepicker = ImagePicker();
 
@@ -53,7 +67,8 @@ class _RegistrationPageState extends State<driverLicense> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: Image.file(image!),
+                child:
+                    image != null ? Image.file(image!) : null, // add null check
               ),
               SizedBox(height: 16.0),
               Center(
@@ -91,19 +106,12 @@ class _RegistrationPageState extends State<driverLicense> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: _idCardImagePath.isNotEmpty
-                    ? Image.asset(
-                        _idCardImagePath,
-                        fit: BoxFit.cover,
-                      )
-                    : Center(
-                        child: Text('No image selected'),
-                      ),
+                child: image1 != null ? Image.file(image1!) : null,
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: uploadImage1,
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -131,6 +139,7 @@ class _RegistrationPageState extends State<driverLicense> {
               ),
               SizedBox(height: 8.0),
               TextFormField(
+                maxLength: 14,
                 decoration: InputDecoration(
                   hintText: 'Enter ID card number',
                   border: OutlineInputBorder(),
