@@ -14,8 +14,7 @@ class loginpage extends StatelessWidget {
   loginpage({Key? key}) : super(key: key);
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  // late final String username = "mostafammalik751@gmail.com";
-  // late final String password = "xxx";
+
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -99,6 +98,9 @@ class loginpage extends StatelessWidget {
   }
 
   /****************************************************** */
+  final _formKey = GlobalKey<FormState>();
+  final passkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,30 +125,46 @@ class loginpage extends StatelessWidget {
                 //    fontSize: 16,
                 //    fontWeight: FontWeight.w500,),),
                 const SizedBox(height: 25),
-                Container(
-                  height: 55,
-                  padding: const EdgeInsets.only(top: 3, left: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 7,
-                      )
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        hintText: 'username',
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.all(0),
-                        hintStyle: const TextStyle(
-                          height: 1,
-                        )),
+                Form(
+                  key: _formKey,
+                  child: Container(
+                    height: 55,
+                    padding: const EdgeInsets.only(top: 3, left: 15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 7,
+                        )
+                      ],
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        final RegExp regex = RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                          caseSensitive: false,
+                          multiLine: false,
+                        );
+                        if (value!.isEmpty) {
+                          return 'Please enter some text';
+                        }if(!regex.hasMatch(value.trim())){
+                          return 'Please Enter Valid Email address';
+                        }
+                        return null;
+                      },
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      obscureText: false,
+                      decoration: InputDecoration(
+                          hintText: 'username',
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.all(0),
+                          hintStyle: const TextStyle(
+                            height: 1,
+                          )),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -163,17 +181,26 @@ class loginpage extends StatelessWidget {
                       )
                     ],
                   ),
-                  child: TextFormField(
-                    controller: passwordController,
-                    keyboardType: TextInputType.emailAddress,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        hintText: 'password',
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.all(0),
-                        hintStyle: const TextStyle(
-                          height: 1,
-                        )),
+                  child: Form(
+                    key:passkey,
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value!.length<6) {
+                          return 'Too Short Password';
+                        }
+                        return null;
+                      },
+                      controller: passwordController,
+                      keyboardType: TextInputType.emailAddress,
+                      obscureText: false,
+                      decoration: InputDecoration(
+                          hintText: 'password',
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.all(0),
+                          hintStyle: const TextStyle(
+                            height: 1,
+                          )),
+                    ),
                   ),
                 ),
 
@@ -182,14 +209,41 @@ class loginpage extends StatelessWidget {
                 // Costumbuttonforlogin('login', 'Home', username!, password!,
                 //     emailController, passwordController),
                 InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, 'Home');
+                  onTap: () async{
+                    if (_formKey.currentState!.validate() && passkey.currentState!.validate()) {
+                      // Form is valid, do something here
+                      try {
+                        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text
+                        );
+                        Navigator.pushNamed(context, 'Home');
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('No user found for that email.'),
+                            ),
+                          );
+
+                        } else if (e.code == 'wrong-password') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Wrong password provided for that user.'),
+                            ),
+                          );
+
+                        }
+                      }
+                    }
+
+
                   },
                   child: Container(
                     alignment: Alignment.center,
                     height: 55,
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 0, 0, 128),
+                        color:const Color.fromARGB(255, 0, 0, 128),
                         borderRadius: BorderRadius.circular(6),
                         boxShadow: [
                           BoxShadow(
@@ -197,17 +251,19 @@ class loginpage extends StatelessWidget {
                             blurRadius: 10,
                           )
                         ]),
-                    child: Text('Sign In',
+                    child: const Text('Sign In As a Passenger',
+
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                        )),
+                        ),),
                   ),
+
                 ),
                 SizedBox(height: 25),
-                button('Sign Up', 'select'),
+                button('Select User Type', 'select'),
                 const SizedBox(height: 40),
-                const socialLogin(),
+                 socialLogin(),
               ],
             ),
           ),
@@ -228,21 +284,18 @@ class loginpage extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () async {
-                final GoogleSignInAccount? googleUser =
-                    await signInWithGoogle();
-                if (googleUser != null) {
-                  // The user has signed in successfully.
-                  // You can now use their information to authenticate your app.
-                }
+              onTap: ()  {
+
               },
-              child: Text(
+              child: const Text(
                 'Sign Up',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
+
                 ),
+
               ),
             ),
           ],

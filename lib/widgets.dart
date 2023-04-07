@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+typedef StringValidator = String? Function(String?);
 
 class widgets extends StatelessWidget {
   widgets({
@@ -9,12 +10,14 @@ class widgets extends StatelessWidget {
     required this.obscure,
     required int maxlen,
     String? data,
+    AutovalidateMode:true, this.validator
   }) : super(key: key);
   final TextEditingController controller;
   final String text;
   final TextInputType textInputType;
   final bool obscure;
   static String? data;
+  final StringValidator? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +45,7 @@ class widgets extends StatelessWidget {
             hintStyle: const TextStyle(
               height: 1,
             )),
+        validator: validator,
       ),
     );
   }

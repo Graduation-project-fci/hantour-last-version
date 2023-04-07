@@ -82,7 +82,9 @@ class pasRegister extends StatelessWidget {
                       fontSize: 20.0,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: Color(0xFF000080),
                     textStyle: TextStyle(
