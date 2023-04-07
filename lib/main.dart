@@ -17,6 +17,7 @@ import 'package:hantourgo/screens/registerationScreens/driver_register.dart';
 import 'package:hantourgo/screens/registerationScreens/nationalID.dart';
 import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
 import 'package:hantourgo/screens/signup.dart';
+import 'package:hantourgo/screens/registerationScreens/driver_signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +46,8 @@ class MyApp extends StatelessWidget {
         'driverlicense': (context) => driverLicense(),
         'select': (context) => selectPag(),
         'id': (context) => nationalID(),
-        'rating': (context) => rating()
+        'rating': (context) => rating(),
+        'signupDriver':(context)=>signupscreenDriver()
       },
     );
   }

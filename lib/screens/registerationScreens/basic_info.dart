@@ -107,8 +107,11 @@
 // }
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hantourgo/firebase_Services/authentication.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class BasicInfo extends StatefulWidget {
   @override
@@ -123,32 +126,48 @@ class _BasicInfoState extends State<BasicInfo> {
   final TextEditingController _addressController = TextEditingController();
 
   File? image; // add ? for null safety
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
 
   final imagepicker = ImagePicker();
 
-  Future<void> uploadImage() async {
+  Future<void> uploadImage(String currentId,String folder) async {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
+
     if (pickedImage == null) {
       print("No Image chosen yet"); // replace Text with print
     } else {
+      final file = File(pickedImage.path);
+      final reference = storage.ref().child('$folder/$currentId');
+      final uploadTask = reference.putFile(file);
+      final snapshot = await uploadTask.whenComplete(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Photo Uploaded Successfully '),
+          ),
+        );
+      });
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
       setState(() {
         image = File(pickedImage.path);
       });
     }
   }
+  final FirebaseAuth _auth=FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registration Page'),
-        backgroundColor: Color(0xFF000080),
+        title: const Text('Registration Page'),
+        backgroundColor: const Color(0xFF000080),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 16.0),
+           const SizedBox(height: 16.0),
             CircleAvatar(
               radius: 50.0,
               backgroundImage: image != null // add null check operator
@@ -157,7 +176,7 @@ class _BasicInfoState extends State<BasicInfo> {
             ),
             SizedBox(height: 8.0),
             ElevatedButton(
-              onPressed: uploadImage,
+              onPressed:()=> uploadImage(_auth.currentUser!.uid,"personal_images"),
               child: Text(
                 'Add a Photo',
                 style: TextStyle(
@@ -179,23 +198,23 @@ class _BasicInfoState extends State<BasicInfo> {
             ),
             TextField(
               controller: _dobController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Full Name',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
+           const SizedBox(height: 16.0),
             TextField(
               controller: _dobController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'E-mail or Phone number',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _dobController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
               ),

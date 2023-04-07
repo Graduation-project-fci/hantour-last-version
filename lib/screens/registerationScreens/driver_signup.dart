@@ -4,41 +4,41 @@ import 'package:flutter/material.dart';
 import 'package:hantourgo/button.dart';
 import 'package:hantourgo/widgets.dart';
 
-class signupscreen extends StatelessWidget {
-   signupscreen({super.key});
+class signupscreenDriver extends StatelessWidget {
+  signupscreenDriver({super.key});
   final _formKey = GlobalKey<FormState>();
-   CollectionReference Riders = FirebaseFirestore.instance.collection('Riders');
-   final FirebaseAuth auth = FirebaseAuth.instance;
+  CollectionReference Riders = FirebaseFirestore.instance.collection('Drivers');
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
 
-   //set new Rider
-   Future<void> addRider(String name,String phone,String email ) {
-     // Call the user's CollectionReference to add a new user
-     return Riders.doc(auth.currentUser!.uid).set({
-       'name':name,'phone':phone,'email':email
-     })
+  //set new Rider
+  Future<void> addDriver(String name,String phone,String email ) {
+    // Call the user's CollectionReference to add a new user
+    return Riders.doc(auth.currentUser!.uid).set({
+      'name':name,'phone':phone,'email':email
+    })
 
-         .then((value) => print("User Added"))
-         .catchError((error) => print("Failed to add user: $error"));
-   }
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
 
   //validate Phone number func
-   String? validatePhoneNumber(String? value) {
-     if (value == null || value.isEmpty) {
-       return 'Please enter your phone number';
-     }
-     final phoneExp = RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
-     if (!phoneExp.hasMatch(value)) {
-       return 'Please enter a valid phone number';
-     }
-     return null;
-   }
+  String? validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    }
+    final phoneExp = RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+    if (!phoneExp.hasMatch(value)) {
+      return 'Please enter a valid phone number';
+    }
+    return null;
+  }
 
 
-   @override
+  @override
   Widget build(BuildContext context) {
     CollectionReference users =
-        FirebaseFirestore.instance.collection('Passenger_registeration');
+    FirebaseFirestore.instance.collection('Passenger_registeration');
     TextEditingController nameController = TextEditingController();
     TextEditingController PhoneController = TextEditingController();
     TextEditingController emailController = TextEditingController();
@@ -81,11 +81,11 @@ class signupscreen extends StatelessWidget {
                     obscure: false,
                     textInputType: TextInputType.text,
                     validator: (value) {
-          if (value!.isEmpty) {
-          return 'Please enter your name';
-          }
-          return null;
-          },
+                      if (value!.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 15),
                   widgets(
@@ -100,12 +100,12 @@ class signupscreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 25),
                   widgets(
-                    data: widgets.data,
-                    maxlen: 100,
-                    controller: emailController,
-                    text: 'Email',
-                    obscure: false,
-                    textInputType: TextInputType.text,
+                      data: widgets.data,
+                      maxlen: 100,
+                      controller: emailController,
+                      text: 'Email',
+                      obscure: false,
+                      textInputType: TextInputType.text,
                       validator: (value) {
                         final RegExp regex = RegExp(
                           r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
@@ -181,7 +181,7 @@ class signupscreen extends StatelessWidget {
                             email: emailController.text.trim(),
                             password: passwordController.text.trim(),
                           );
-                          addRider(nameController.text.trim(),PhoneController.text.trim(),emailController.text.trim());
+                          addDriver(nameController.text.trim(),PhoneController.text.trim(),emailController.text.trim());
 
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {

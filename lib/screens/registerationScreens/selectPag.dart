@@ -22,8 +22,8 @@ class selectPag extends StatelessWidget {
                     title:
                         Text('Driver', style: TextStyle(color: Colors.black)),
                     trailing: Icon(Icons.arrow_forward, color: Colors.black),
-                    onTap: () {
-                      Navigator.pushNamed(context, 'driverregister');
+                    onTap: () {Navigator.of(context).pushNamed('signupDriver');
+                      //Navigator.pushNamed(context, 'driverregister');
                     },
                   ),
                   Divider(),
