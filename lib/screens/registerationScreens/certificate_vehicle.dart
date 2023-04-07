@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class certificate_vehicle extends StatefulWidget {
   @override
@@ -8,7 +11,35 @@ class certificate_vehicle extends StatefulWidget {
 class _RegistrationPageState extends State<certificate_vehicle> {
   String _idCardNumber = '';
   String _idCardImagePath = '';
+  File? imagefront, imageback; // add ? for null safety
 
+  final imagepicker1 = ImagePicker();
+
+  Future<void> uploadImagefront() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) {
+      print("No Image chosen yet"); // replace Text with print
+    } else {
+      setState(() {
+        imagefront = File(pickedImage.path);
+      });
+    }
+  }
+
+  final imagepicker = ImagePicker();
+
+  Future<void> uploadImageback() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) {
+      print("No Image chosen yet"); // replace Text with print
+    } else {
+      setState(() {
+        imageback = File(pickedImage.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +65,12 @@ class _RegistrationPageState extends State<certificate_vehicle> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: _idCardImagePath.isNotEmpty
-                    ? Image.asset(
-                  _idCardImagePath,
-                  fit: BoxFit.cover,
-                )
-                    : Center(
-                  child: Text('No image selected'),
-                ),
+                child: imagefront != null ? Image.file(imagefront!) : null,
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: uploadImagefront,
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -79,19 +103,12 @@ class _RegistrationPageState extends State<certificate_vehicle> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: _idCardImagePath.isNotEmpty
-                    ? Image.asset(
-                  _idCardImagePath,
-                  fit: BoxFit.cover,
-                )
-                    : Center(
-                  child: Text('No image selected'),
-                ),
+                child: imageback != null ? Image.file(imageback!) : null,
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: uploadImageback,
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -128,22 +145,24 @@ class _RegistrationPageState extends State<certificate_vehicle> {
               SizedBox(height: 32.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'id');
+                  },
                   child: Text(
                     'Next',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.0,),),
+                      fontSize: 20.0,
+                    ),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF000080),
                     textStyle: TextStyle(
                       fontSize: 40.0,
                     ),
                   ),
-
                 ),
               ),
-
             ],
           ),
         ),

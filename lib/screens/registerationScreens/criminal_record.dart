@@ -40,7 +40,7 @@ class _RegistrationPageState extends State<criminal_record> {
           padding:
               const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'Criminal Record photo',
@@ -53,16 +53,33 @@ class _RegistrationPageState extends State<criminal_record> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: _idCardImagePath.isNotEmpty
-                    ? Image.asset(
-                        _idCardImagePath,
-                        fit: BoxFit.cover,
-                      )
-                    : Center(
-                        child: Text('No image selected'),
-                      ),
+                child: image != null ? Image.file(image!) : null,
               ),
               SizedBox(height: 32.0),
+              ElevatedButton(
+                onPressed: uploadImage,
+                child: Text(
+                  'Add a Photo',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
+              ),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
