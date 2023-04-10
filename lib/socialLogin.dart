@@ -56,6 +56,7 @@ class socialLogin extends StatelessWidget {
                     try{
                       final userCredential = await signInWithGoogle();
                       print('Signed in as ${userCredential.user!.displayName}');
+                      Navigator.pushNamed(context, 'Home') ;
 
                     }catch(e){
                       ScaffoldMessenger.of(context).showSnackBar(

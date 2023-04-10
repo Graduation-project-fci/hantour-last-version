@@ -182,6 +182,7 @@ class signupscreenDriver extends StatelessWidget {
                             password: passwordController.text.trim(),
                           );
                           addDriver(nameController.text.trim(),PhoneController.text.trim(),emailController.text.trim());
+                          Navigator.pushNamed(context, 'basicinfo');
 
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {

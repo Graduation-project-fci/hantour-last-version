@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hantourgo/screens/registerationScreens/basic_info.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,35 +16,65 @@ class _RegistrationPageState extends State<driverLicense> {
   String _idCardNumber = '';
   String _idCardImagePath = '';
   final TextEditingController _dobController = TextEditingController();
-  File? image1, image; // add ? for null safety
+  File? imagefront;
+  File? imageback;// add ? for null safety
+  final FirebaseStorage storage = FirebaseStorage.instance;
 
-  final imagepicker1 = ImagePicker();
-
-  Future<void> uploadImage1() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage == null) {
-      print("No Image chosen yet"); // replace Text with print
-    } else {
-      setState(() {
-        image1 = File(pickedImage.path);
-      });
-    }
-  }
 
   final imagepicker = ImagePicker();
+  String downloadUrlfront='';
+  String downloadUrlback='';
+ String  downloadUrl="";
 
-  Future<void> uploadImage() async {
+  Future<void> uploadImage(String currentId,String folder) async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      if(folder=='driver_licence/front'){
+        imagefront =File(pickedImage!.path);
+      }else if(folder=='driver_licence/back'){
+        imageback =File(pickedImage!.path);
+      }
+
+    });
+
     if (pickedImage == null) {
       print("No Image chosen yet"); // replace Text with print
     } else {
-      setState(() {
-        image = File(pickedImage.path);
+      final file = File(pickedImage.path);
+      final reference = storage.ref().child('$folder/$currentId');
+      final uploadTask = reference.putFile(file);
+      final snapshot = await uploadTask.whenComplete(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Photo Uploaded Successfully '),
+          ),
+        );
       });
+      if(folder=='driver_licence/front'){
+        downloadUrlfront=await snapshot.ref.getDownloadURL();
+      }else if(folder=='driver_licence/back'){
+        downloadUrlback=await snapshot.ref.getDownloadURL();
+      }
     }
   }
+  final FirebaseAuth _auth=FirebaseAuth.instance;
+  CollectionReference Licence =
+  FirebaseFirestore.instance.collection('DriverLicence');
+
+  Future<void> upload_license() async{
+    return await Licence
+        .doc(_auth.currentUser!.uid)
+        .set({
+      'back_driver_licence':downloadUrlback,
+      'front_driver_licence':downloadUrlfront,
+
+    })
+        .then((value) => print("Data updated"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,12 +101,12 @@ class _RegistrationPageState extends State<driverLicense> {
                   border: Border.all(color: Colors.grey),
                 ),
                 child:
-                    image != null ? Image.file(image!) : null, // add null check
+                    imagefront != null ? Image.file(imagefront!) : null, // add null check
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: uploadImage,
+                  onPressed: ()=>uploadImage(_auth.currentUser!.uid,'driver_licence/front'),
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -106,12 +139,12 @@ class _RegistrationPageState extends State<driverLicense> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: image1 != null ? Image.file(image1!) : null,
+                child: imageback != null ? Image.file(imageback!) : null,
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: uploadImage1,
+                  onPressed: ()=>uploadImage(_auth.currentUser!.uid,'driver_licence/back'),
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -162,7 +195,16 @@ class _RegistrationPageState extends State<driverLicense> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('criminal');
+                    if (imageback != null && imagefront != null) {
+                      upload_license();
+                      Navigator.of(context).pushNamed('criminal');
+                    }
+                    else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Piease choose an IMAGE')));
+                    }
+
                   },
                   child: Text(
                     'Next',

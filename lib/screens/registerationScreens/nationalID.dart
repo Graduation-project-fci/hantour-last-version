@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -9,34 +12,74 @@ class nationalID extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<nationalID> {
+  TextEditingController IDController = TextEditingController() ;
   String _idCardNumber = '';
   String _idCardImagePath = '';
-  final imagepicker1 = ImagePicker();
-  File? imagefrontID, imagebackID;
+  File? imagefront;
+  File? imageback;// add ? for null safety
+  final FirebaseStorage storage = FirebaseStorage.instance;
+  CollectionReference NationalId =
+  FirebaseFirestore.instance.collection('NationalId');
 
-  Future<void> uploadImagefront() async {
+  Future<void> upload_national_id() {
+    return NationalId
+        .doc(_auth.currentUser!.uid)
+        .set({
+      'idCardBack':downloadUrlback,
+      'idCardFront':downloadUrlfront,
+      'nationIdCard':IDController.text.trim().toString()
+    })
+        .then((value) => print("Data updated"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+
+  final imagepicker = ImagePicker();
+  String downloadUrlfront='';
+  String downloadUrlback='';
+
+  Future<void> uploadImage(String currentId,String folder  ,String downloadimage) async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      if(folder=='NationalId/front'){
+        imagefront =File(pickedImage!.path);
+
+      }else if(folder=='NationalId/back'){
+        imageback =File(pickedImage!.path);
+      }
+
+    });
+
     if (pickedImage == null) {
       print("No Image chosen yet"); // replace Text with print
     } else {
-      setState(() {
-        imagefrontID = File(pickedImage.path);
-      });
-    }
-  }
+      final file = File(pickedImage.path);
+      final reference = storage.ref().child('$folder/$currentId');
+      final uploadTask = reference.putFile(file);
+      final snapshot = await uploadTask.whenComplete(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Photo Uploaded Successfully '),
+          ),
+        );
 
-  Future<void> uploadImageback() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage == null) {
-      print("No Image chosen yet"); // replace Text with print
-    } else {
-      setState(() {
-        imagebackID = File(pickedImage.path);
       });
+      if(folder=='NationalId/front'){
+        downloadUrlfront=await snapshot.ref.getDownloadURL();
+      }else if(folder=='NationalId/back'){
+        downloadUrlback=await snapshot.ref.getDownloadURL();
+      }
+
+
+      // setState(() {
+      //   image = File(pickedImage.path);
+      // });
     }
+
   }
+  final FirebaseAuth _auth=FirebaseAuth.instance;
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +105,8 @@ class _RegistrationPageState extends State<nationalID> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: imagefrontID != null
-                    ? Image.file(imagefrontID!)
+                child: imagefront != null
+                    ? Image.file(imagefront!)
                     : Center(
                         child: Text('No image selected'),
                       ),
@@ -71,7 +114,11 @@ class _RegistrationPageState extends State<nationalID> {
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: uploadImagefront,
+                  onPressed: ()async{
+                   await uploadImage(_auth.currentUser!.uid, 'NationalId/front' ,downloadUrlfront);
+                   print('front ${downloadUrlfront} \n back: ${downloadUrlback}');
+
+                  },
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -104,8 +151,8 @@ class _RegistrationPageState extends State<nationalID> {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: imagebackID != null
-                    ? Image.file(imagebackID!)
+                child: imageback != null
+                    ? Image.file(imageback!)
                     : Center(
                         child: Text('No image selected'),
                       ),
@@ -113,7 +160,10 @@ class _RegistrationPageState extends State<nationalID> {
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
-                  onPressed: uploadImageback,
+                  onPressed: ()async{
+                   await uploadImage(_auth.currentUser!.uid, 'NationalId/back' ,downloadUrlback);
+
+                  },
                   child: Text(
                     'Select Image',
                     style: TextStyle(
@@ -141,6 +191,10 @@ class _RegistrationPageState extends State<nationalID> {
               ),
               SizedBox(height: 8.0),
               TextFormField(
+                controller: IDController,
+                onEditingComplete: (){
+
+                },
                 decoration: InputDecoration(
                   hintText: 'Enter ID card number',
                   border: OutlineInputBorder(),
@@ -152,7 +206,16 @@ class _RegistrationPageState extends State<nationalID> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'select');
+                    if (imageback != null && imagefront != null) {
+                      Navigator.of(context).pushNamed('select');
+                      upload_national_id();
+                    }
+                    else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Piease choose an IMAGE for national id')));
+                    }
+
                   },
                   child: Text(
                     'Next',

@@ -1,6 +1,9 @@
 //criminal_record
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,19 +16,52 @@ class _RegistrationPageState extends State<criminal_record> {
   String _idCardNumber = '';
   String _idCardImagePath = '';
   File? image; // add ? for null safety
+  final FirebaseAuth _auth=FirebaseAuth.instance;
+  CollectionReference criminal =
+  FirebaseFirestore.instance.collection('CriminalRecords');
+
 
   final imagepicker = ImagePicker();
+  String downloadUrl="";
+  final FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<void> uploadImage() async {
+  Future<void> uploadImage(String currentId,String folder) async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      image =File(pickedImage!.path);
+    });
+
     if (pickedImage == null) {
       print("No Image chosen yet"); // replace Text with print
     } else {
-      setState(() {
-        image = File(pickedImage.path);
+      final file = File(pickedImage.path);
+      final reference = storage.ref().child('$folder/$currentId');
+      final uploadTask = reference.putFile(file);
+      final snapshot = await uploadTask.whenComplete(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Photo Uploaded Successfully '),
+          ),
+        );
       });
+      downloadUrl = await snapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
+      // setState(() {
+      //   image = File(pickedImage.path);
+      // });
     }
+  }
+  Future<void> upload_criminal() async{
+    return await criminal
+        .doc(_auth.currentUser!.uid)
+        .set({
+      'criminalimage' : downloadUrl
+
+    })
+        .then((value) => print("Data updated"))
+        .catchError((error) => print("Failed to add user: $error"));
   }
 
   @override
@@ -57,7 +93,10 @@ class _RegistrationPageState extends State<criminal_record> {
               ),
               SizedBox(height: 32.0),
               ElevatedButton(
-                onPressed: uploadImage,
+                onPressed: (){
+
+                  uploadImage(_auth.currentUser!.uid, 'criminal_report_images') ;
+                },
                 child: Text(
                   'Add a Photo',
                   style: TextStyle(
@@ -83,7 +122,15 @@ class _RegistrationPageState extends State<criminal_record> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('certificate');
+                    if (image != null) {
+                      upload_criminal();
+                      Navigator.of(context).pushNamed('id');
+                    }
+                    else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Piease choose an for criminal record')));
+                    }
                   },
                   child: Text(
                     'Next',

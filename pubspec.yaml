@@ -54,6 +54,7 @@ dependencies:
   firebase_storage: ^11.1.0
   firebase_database: ^10.1.0
   polyline: ^1.0.2
+  geolocator: ^9.0.2
   # google_maps_webservice: ^0.0.16
   # flutter_mapbox_autocomplete: ^1.0.1
    

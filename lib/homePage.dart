@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hantourgo/constants/constantsize.dart';
 import 'package:hantourgo/profile_pages/user_profile.dart';
@@ -181,26 +182,32 @@ class _HomePageState extends State<HomePage> {
             //     zoom: 12,
             //   ),
             // ),
-            GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(37.77483, -122.41942),
-                zoom: 12,
-              ),
-              polylines: {
-                Polyline(
-                  polylineId: PolylineId('route1'),
-                  color: Colors.blue,
-                  width: 5,
-                  points: [
-                    LatLng(37.77483, -122.41942), // source
-                    LatLng(37.7749, -122.41815), // intermediate point
-                    LatLng(37.77493, -122.41793), // intermediate point
-                    LatLng(37.77493, -122.41793), // destination
-                  ],
-                ),
-              },
-            ),
-            /********************************************** */
+            // GoogleMap(
+            //   initialCameraPosition: CameraPosition(
+            //     target: LatLng(37.77483, -122.41942),
+            //     zoom: 12,
+            //   ),
+            //   polylines: {
+            //     Polyline(
+            //       polylineId: PolylineId('route1'),
+            //       color: Colors.blue,
+            //       width: 5,
+            //       points: [
+            //         LatLng(37.77483, -122.41942), // source
+            //         LatLng(37.7749, -122.41815), // intermediate point
+            //         LatLng(37.77493, -122.41793), // intermediate point
+            //         LatLng(37.77493, -122.41793), // destination
+            //       ],
+            //     ),
+            //   },
+            // ),
+
+
+
+
+
+
+            // /********************************************** */
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
