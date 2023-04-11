@@ -20,6 +20,8 @@ import 'package:hantourgo/screens/signup.dart';
 import 'package:hantourgo/screens/registerationScreens/driver_signup.dart';
 import 'package:hantourgo/screens/driverscreens/driver_home.dart';
 
+import 'homepage2.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: fpage(),
+      home: HomePage2(),
       routes: {
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),

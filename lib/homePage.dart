@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -36,6 +40,8 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+  final _searchController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +60,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Stack(
                 children: [
+
                   Container(
                     height: MediaQuery.of(context).size.height / 2,
                     color: Colors.green,
@@ -234,6 +241,45 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+                TypeAheadField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      focusColor: Colors.red,
+                      hintText: 'Search for a place',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  suggestionsCallback: (pattern) async {
+                    if (pattern.isEmpty) {
+                      return [];
+                    }
+
+                    String url = 'https://nominatim.openstreetmap.org/search?q=$pattern&format=json&limit=10';
+                    http.Response response = await http.get(Uri.parse(url));
+                    List<dynamic> data = json.decode(response.body);
+
+                    return data.map((item) {
+                      return item['display_name'];
+                    }).toList();
+                  },
+                  itemBuilder: (context, suggestion) {
+                    return ListTile(
+                      title: Text(suggestion),
+                    );
+                  },
+                  onSuggestionSelected: (suggestion) async {
+                    String url = 'https://nominatim.openstreetmap.org/search?q=$suggestion&format=json&limit=1';
+                    http.Response response = await http.get(Uri.parse(url));
+                    List<dynamic> data = json.decode(response.body);
+
+                    double lat = double.parse(data[0]['lat']);
+                    double lng = double.parse(data[0]['lon']);
+
+                    print('Selected place: $suggestion ($lat, $lng)');
+                  },
+                ),
+
                 Container(
                   child: Column(
                     children: [
@@ -306,6 +352,7 @@ class _HomePageState extends State<HomePage> {
                                   hintStyle: const TextStyle(
                                       height: 1, color: Colors.grey)),
                             ),
+
                           ),
                         ],
                       ),
@@ -369,6 +416,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+
               ],
             ),
           ],
