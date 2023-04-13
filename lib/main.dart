@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -19,14 +21,28 @@ import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
 import 'package:hantourgo/screens/signup.dart';
 import 'package:hantourgo/screens/registerationScreens/driver_signup.dart';
 import 'package:hantourgo/screens/driverscreens/driver_home.dart';
+import 'package:http/http.dart' as http;
+import 'screens/newFile.dart';
 
 import 'homepage2.dart';
 
 void main() async {
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    // Create a new `HttpClient` that accepts any SSL certificate
+    final client = super.createHttpClient(context);
+    client.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    return client;
+  }
+}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -34,7 +50,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: HomePage2(),
+      debugShowCheckedModeBanner: false,
+      home:HomePage2(),
       routes: {
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),
