@@ -9,14 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  ansicolor:
-    dependency: transitive
-    description:
-      name: ansicolor
-      sha256: "78bc93b397e4c1eb2d8b47b4bee7c68831b68326dae2c43573ac10e4e192052a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   async:
     dependency: transitive
     description:
@@ -89,14 +81,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
-  console_log_handler:
-    dependency: transitive
-    description:
-      name: console_log_handler
-      sha256: "3529d45b47487f48850322fa123cc382316f3d5708a33d75cc8f1a73f56a8b0b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.6"
   cross_file:
     dependency: transitive
     description:
@@ -302,14 +286,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.9"
-  flutter_polyline_points:
-    dependency: "direct main"
-    description:
-      name: flutter_polyline_points
-      sha256: "02699e69142f51a248d784b6e3eec524194467fca5f7c4da19699ce2368b6980"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   flutter_signin_button:
     dependency: "direct main"
     description:
@@ -408,38 +384,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1"
-  google_maps_flutter:
-    dependency: "direct main"
-    description:
-      name: google_maps_flutter
-      sha256: "24392ef192f3b00bcd93151375676805a9933574423a5bd5509a0ead2e8a4215"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.5"
-  google_maps_flutter_android:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_android
-      sha256: ee3c1a63983b8ba17a9a7c1233c3542fbfbc0ebf540d3aa9b8fd5162681e0219
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.10"
-  google_maps_flutter_ios:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_ios
-      sha256: e9ad74415a222573625a2c1717adc1e375b18e8ce660fc12db734d1bda1132d4
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.1"
-  google_maps_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_platform_interface
-      sha256: a07811d2b82055815ede75e1fe4b7b76f71a0b4820b26f71bdaddd157d6a3e20
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.6"
   google_sign_in:
     dependency: "direct main"
     description:
@@ -552,14 +496,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.5"
-  latlong:
+  latlng:
     dependency: "direct main"
     description:
-      name: latlong
-      sha256: "2b185c6c09793ba35b720ff97ea801f3d5731cfb2e8bb387b12cc6de1eb2fb72"
+      name: latlng
+      sha256: "7184897f8c807eec96b0ec931293d46c052f92bfee9a9b2b4648b66fed5f34cd"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.1"
+    version: "0.2.1"
   latlong2:
     dependency: transitive
     description:
@@ -624,14 +568,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.7"
-  logging:
-    dependency: transitive
+  location:
+    dependency: "direct main"
     description:
-      name: logging
-      sha256: "239402c239e2a390cf745af3a496fb985dc8f0b31b3f5fe0d460e42289d33ad7"
+      name: location
+      sha256: "9051959f6f2ccadd887b28b66e9cbbcc25b6838e37cf9e894c421ccc0ebf80b5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.11.4"
+    version: "4.4.0"
+  location_platform_interface:
+    dependency: transitive
+    description:
+      name: location_platform_interface
+      sha256: "62eeaf1658e92e4459b727f55a3c328eccbac8ba043fa6d262ac5286ad48384c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  location_web:
+    dependency: transitive
+    description:
+      name: location_web
+      sha256: "6c08c408a040534c0269c4ff9fe17eebb5a36dea16512fbaf116b9c8bc21545b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
   matcher:
     dependency: transitive
     description:
@@ -704,14 +664,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  polyline:
-    dependency: "direct main"
-    description:
-      name: polyline
-      sha256: "4ffdbc0d3a836eaf60bcd610ea82fc407681e5edcfe87ac90545b6e6b1c82077"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   positioned_tap_detector_2:
     dependency: transitive
     description:
@@ -773,14 +725,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  stream_transform:
-    dependency: transitive
-    description:
-      name: stream_transform
-      sha256: "14a00e794c7c11aa145a170587321aedce29769c08d7f58b1d141da75e3b1c6f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   string_scanner:
     dependency: transitive
     description:
@@ -901,14 +845,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.5"
-  validate:
-    dependency: transitive
-    description:
-      name: validate
-      sha256: e454e9357766615ecedd8dc8ffd1e5a80d54f53d5bf878fee9d5143cb0f57f4d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.7.0"
   vector_math:
     dependency: transitive
     description:

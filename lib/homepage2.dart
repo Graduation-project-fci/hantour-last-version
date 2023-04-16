@@ -5,10 +5,13 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:hantourgo/constants/constantsize.dart';
 import 'package:hantourgo/profile_pages/user_profile.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
+
 
 class HomePage2 extends StatefulWidget {
   const HomePage2({super.key});
@@ -18,6 +21,34 @@ class HomePage2 extends StatefulWidget {
 }
 
 class _HomePage2State extends State<HomePage2> {
+  Future<void> updateLocation(Function(LocationData) callback) async {
+    Location location = Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      callback(currentLocation);
+    });
+  }
+
   double heightvar = 30;
   double _height = 300.0;
   final double _defaultHeight = 30.0;
@@ -39,20 +70,29 @@ class _HomePage2State extends State<HomePage2> {
       });
     }
   }
+  var CurrentLocation=LatLng(0, 0);
 
   final _searchController_source = TextEditingController();
   final _searchController_destination = TextEditingController();
+    var source_coordinates=LatLng(0, 0);
+   var destination_coordinates=LatLng(0, 0);
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateLocation((LocationData currentLocation) {
+      // Use the current location here
+      CurrentLocation=LatLng(currentLocation.latitude!, currentLocation.longitude!);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      // ),
+
       drawer: Drawer(
-        // backgroundColor: Colors.red,
+
 
         surfaceTintColor: Colors.green,
         child: Column(
@@ -68,7 +108,7 @@ class _HomePage2State extends State<HomePage2> {
                     Padding(
                       padding: const EdgeInsets.only(top: 50, left: 30),
                       child: CircleAvatar(
-                        backgroundColor: Color.fromARGB(255, 6, 42, 70),
+                        backgroundColor: const Color.fromARGB(255, 6, 42, 70),
                         radius: 80,
                         backgroundImage:
                             image != null // add null check operator
@@ -77,8 +117,8 @@ class _HomePage2State extends State<HomePage2> {
                                 : null,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, bottom: 20),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, bottom: 20),
                       child: Text(
                         'Mostafa M Malik',
                         style: TextStyle(
@@ -87,8 +127,8 @@ class _HomePage2State extends State<HomePage2> {
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, bottom: 20),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, bottom: 20),
                       child: Text(
                         'mostafammalik751@gmail.com',
                         style: TextStyle(
@@ -102,11 +142,11 @@ class _HomePage2State extends State<HomePage2> {
               ],
             ),
             Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Icon(
                     Icons.car_crash,
                     color: Colors.blue,
@@ -119,11 +159,11 @@ class _HomePage2State extends State<HomePage2> {
               ),
             ),
             Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Icon(
                     Icons.monetization_on,
                     color: Colors.yellow,
@@ -144,7 +184,7 @@ class _HomePage2State extends State<HomePage2> {
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: const [
                     Icon(
                       Icons.favorite,
                       color: Colors.red,
@@ -159,11 +199,11 @@ class _HomePage2State extends State<HomePage2> {
               ),
             ),
             Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Icon(
                     Icons.phone,
                     color: Colors.red,
@@ -182,46 +222,53 @@ class _HomePage2State extends State<HomePage2> {
           child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(37.7749, -122.4194),
-              zoom: 12,
-            ),
-          ),
-          // GoogleMap(
-          //   initialCameraPosition: CameraPosition(
-          //     target: LatLng(37.77483, -122.41942),
-          //     zoom: 12,
-          //   ),
-          //
-          //
-          // ),
 
-          // FlutterMap(
-          //   options: MapOptions(
-          //     zoom: 16.0,
-          //     maxZoom: 19.0,
-          //
-          //   ),
-          //   children: [
-          //     // PolylineLayer(
-          //     //   polylineCulling: false,
-          //     //   polylines: [
-          //     //     Polyline(
-          //     //       points: [LatLng(30, 40), LatLng(20, 50), LatLng(25, 45),],
-          //     //       color: Colors.blue,
-          //     //     ),
-          //     //   ],
-          //     // ),
-          //     MarkerLayer(
-          //       markers: [
-          //         Marker(
-          //
-          //         )
-          //       ],
-          //     )
-          //   ],
-          // ),
+
+          FlutterMap(
+            options: MapOptions(
+              zoom: 14.0,
+              maxZoom: 19.0,
+              center: CurrentLocation,
+
+
+
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.app',
+
+              ),
+
+                  PolylineLayer(
+                    polylineCulling: false,
+                    polylines: [
+                      //LatLng(25.696751832973945, 32.645047861913596),LatLng(25.6944702171113, 32.64794464757829)
+
+
+                      (source_coordinates!=null && destination_coordinates!=null)? Polyline( points: [source_coordinates,destination_coordinates],
+                        color:Colors.green,strokeWidth: 4.0,
+                  ):Polyline( points: [LatLng(0, 0),LatLng(0, 0)],
+                        color:Colors.green,strokeWidth: 4.0,
+                      )
+
+
+                    ],
+                  ),
+
+               MarkerLayer(
+                markers: [
+                  Marker(point:LatLng(25.696838842882965, 32.644554335467014,),
+                  width:80,
+                  height: 80, builder: (context)=>Icon(Icons.gps_fixed),
+
+                  ),
+
+
+                ],
+              )
+            ],
+          ),
 
           // /********************************************** */
           SingleChildScrollView(
@@ -248,6 +295,12 @@ class _HomePage2State extends State<HomePage2> {
 //
 //     height: MediaQuery.of(context).size.height*0.25) ,
                   Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 6, 42, 70),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
@@ -255,32 +308,32 @@ class _HomePage2State extends State<HomePage2> {
                         Row(
                           children: [
                             Container(
+                              margin: EdgeInsets.all(9),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)),
+                              width: 90,
+                              height: 70,
                               child: Image.asset(
                                 'assets/images/1.jpg',
                                 width: 90,
                               ),
-                              margin: EdgeInsets.all(9),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)),
-                              width: 90,
-                              height: 70,
                             ),
                             Container(
-                              child: Image.asset('assets/images/gps.png'),
                               margin: EdgeInsets.all(9),
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10)),
                               width: 90,
                               height: 70,
+                              child: Image.asset('assets/images/gps.png'),
                             ),
                           ],
                         ),
                         Expanded(
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.circle_outlined,
                                 color: Colors.grey,
                               ),
@@ -290,10 +343,10 @@ class _HomePage2State extends State<HomePage2> {
                                 child: TypeAheadField(
                                   textFieldConfiguration:
                                       TextFieldConfiguration(
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                     cursorColor: Colors.white,
                                     controller: _searchController_source,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       focusColor: Colors.red,
                                       hintText: 'Search for a place',
                                       hintStyle: TextStyle(color: Colors.grey),
@@ -330,7 +383,7 @@ class _HomePage2State extends State<HomePage2> {
                                   itemBuilder: (context, suggestion) {
                                     return ListTile(
                                       textColor: Colors.white,
-                                      tileColor: Color.fromARGB(255, 6, 42, 70),
+                                      tileColor: const Color.fromARGB(255, 6, 42, 70),
                                       title: Text(suggestion),
                                     );
                                   },
@@ -347,6 +400,9 @@ class _HomePage2State extends State<HomePage2> {
                                     _searchController_source.text = suggestion;
                                     print(
                                         'Selected place: $suggestion ($lat, $lng)');
+                                    setState(() {
+                                      source_coordinates=LatLng(lat, lng);
+                                    });
                                   },
                                 ),
                               ),
@@ -356,12 +412,12 @@ class _HomePage2State extends State<HomePage2> {
                         Expanded(
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.circle_outlined,
                                 color: Colors.grey,
                               ),
                               Container(
-                                margin: EdgeInsets.only(bottom: 3),
+                                margin: const EdgeInsets.only(bottom: 3),
                                 child: SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.9,
@@ -370,10 +426,10 @@ class _HomePage2State extends State<HomePage2> {
                                   child: TypeAheadField(
                                     textFieldConfiguration:
                                         TextFieldConfiguration(
-                                      style: TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                       cursorColor: Colors.white,
                                       controller: _searchController_destination,
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         fillColor: Colors.red,
                                         focusColor: Colors.red,
                                         hintText: 'Search for a place',
@@ -431,6 +487,9 @@ class _HomePage2State extends State<HomePage2> {
                                           suggestion;
                                       print(
                                           'Selected place: $suggestion ($lat, $lng)');
+                                      setState(() {
+                                        destination_coordinates=LatLng(lat, lng);
+                                      });
                                     },
                                   ),
                                 ),
@@ -440,19 +499,19 @@ class _HomePage2State extends State<HomePage2> {
                         ),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.monetization_on,
                               color: Colors.grey,
                             ),
                             Container(
                               // padding: EdgeInsets.all(),
-                              margin: EdgeInsets.symmetric(horizontal: 20),
+                              margin: const EdgeInsets.symmetric(horizontal: 20),
                               width: MediaQuery.of(context).size.width - 80,
                               height: 40,
                               child: TextFormField(
                                 keyboardType: TextInputType.text,
                                 obscureText: false,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     fillColor: Colors.white,
                                     hintText: 'Offer your Fare',
                                     border: UnderlineInputBorder(
@@ -467,8 +526,8 @@ class _HomePage2State extends State<HomePage2> {
                                       borderSide:
                                           BorderSide(color: Colors.grey),
                                     ),
-                                    contentPadding: const EdgeInsets.all(0),
-                                    hintStyle: const TextStyle(
+                                    contentPadding: EdgeInsets.all(0),
+                                    hintStyle: TextStyle(
                                         height: 1, color: Colors.grey)),
                               ),
                             ),
@@ -501,7 +560,7 @@ class _HomePage2State extends State<HomePage2> {
                         //   ],
                         // ),
                         Container(
-                          margin: EdgeInsets.symmetric(
+                          margin: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           child: InkWell(
                             onTap: () {},
@@ -517,7 +576,7 @@ class _HomePage2State extends State<HomePage2> {
                                       blurRadius: 10,
                                     )
                                   ]),
-                              child: Text('Call Driver',
+                              child: const Text('Call Driver',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
@@ -526,12 +585,6 @@ class _HomePage2State extends State<HomePage2> {
                           ),
                         ),
                       ],
-                    ),
-                    height: MediaQuery.of(context).size.height / 2,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 6, 42, 70),
-                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ],
