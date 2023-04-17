@@ -54,6 +54,7 @@ dependencies:
   flutter_map: ^3.1.0
   latlng: ^0.2.1
   location: ^4.4.0
+  geocoding: ^2.1.0
   # google_maps_webservice: ^0.0.16
   # flutter_mapbox_autocomplete: ^1.0.1
    

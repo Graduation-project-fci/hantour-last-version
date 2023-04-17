@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
@@ -11,6 +12,7 @@ import 'package:hantourgo/profile_pages/user_profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 
 
 class HomePage2 extends StatefulWidget {
@@ -21,33 +23,9 @@ class HomePage2 extends StatefulWidget {
 }
 
 class _HomePage2State extends State<HomePage2> {
-  Future<void> updateLocation(Function(LocationData) callback) async {
-    Location location = Location();
+  late Marker _marker;
+  final MapController _mapController = MapController();
 
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _locationData;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    location.onLocationChanged.listen((LocationData currentLocation) {
-      callback(currentLocation);
-    });
-  }
 
   double heightvar = 30;
   double _height = 300.0;
@@ -70,21 +48,110 @@ class _HomePage2State extends State<HomePage2> {
       });
     }
   }
+  Future<void> _updateMarkerPosition() async {
+    try {
+      // retrieve the user's current location using geolocator
+      Position position = await Geolocator.getCurrentPosition();
+      // create a new marker object with the updated position
+      Marker updatedMarker = Marker(
+        point: LatLng(position.latitude, position.longitude),
+        width: 50,
+        height: 50,
+        builder: (context) => FlutterLogo(),
+      );
+      // update the state of your widget tree with the new marker object
+      setState(() {
+        _marker = updatedMarker;
+
+        (_searchController_source.text=="")?  _mapController.move(_marker.point, 15.0): null;
+
+      });
+    } catch (e) {
+      print('Error retrieving location: $e');
+    }
+    // call this function again after 5 seconds
+    Future.delayed(Duration(seconds: 5), () => _updateMarkerPosition());
+  }
+
+
+
   var CurrentLocation=LatLng(0, 0);
+  List<Marker> _markers = [];
 
   final _searchController_source = TextEditingController();
-  final _searchController_destination = TextEditingController();
+  final _searchCont_destination = TextEditingController();
     var source_coordinates=LatLng(0, 0);
    var destination_coordinates=LatLng(0, 0);
-   @override
-  void initState() {
+   var center=LatLng(25.696838842882965, 32.644554335467014);
+  Future<String> getAddressFromLatLng(double lat, double lng) async {
+    String apiUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng&zoom=18&addressdetails=1";
+    var response = await http.get(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      var result = json.decode(response.body);
+      String address = result["display_name"];
+      return address;
+    } else {
+      return "Unable to retrieve address";
+    }
+  }
+
+  @override
+  void initState()  {
     // TODO: implement initState
     super.initState();
-    // updateLocation((LocationData currentLocation) {
-    //   // Use the current location here
-    //   CurrentLocation=LatLng(currentLocation.latitude!, currentLocation.longitude!);
-    // });
+
+
+    _marker = Marker(
+      point: center,
+      width: 50,
+      height: 50,
+      builder: (context) => FlutterLogo(),
+    );
+    source_coordinates=LatLng(0, 0);
+    destination_coordinates=LatLng(0, 0);
+    _updateMarkerPosition();
   }
+  void _handleTap(LatLng latLng) async {
+    double latitude = latLng.latitude;
+    double longitude = latLng.longitude;
+
+    String url = 'https://nominatim.openstreetmap.org/reverse?lat=$latitude&lon=$longitude&format=jsonv2';
+
+    http.Response response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      String responseBody = response.body;
+      Map<String, dynamic> jsonResponse = jsonDecode(responseBody);
+      String placeName = jsonResponse['display_name'];
+      print(placeName);
+
+      setState(() {
+        _marker = Marker(
+          width: 80.0,
+          height: 80.0,
+          point: LatLng(latitude, longitude),
+          builder: (ctx) => Icon(
+            Icons.location_on,
+            size: 50,
+            color: Colors.red,
+          ),
+        );
+        _mapController.move(LatLng(latitude, longitude), 15.0);
+      });
+    } else {
+      print('Error reverse geocoding: ${response.statusCode}');
+    }
+  }
+
+
+void handleMarkers(){
+     while(_markers.length>2){
+       _markers.removeAt(0);
+
+
+     }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -225,14 +292,38 @@ class _HomePage2State extends State<HomePage2> {
 
 
           FlutterMap(
+            mapController: _mapController,
+
             options: MapOptions(
-              zoom: 14.0,
+              zoom: 15.0,
               maxZoom: 19.0,
-              center: LatLng(25.696838842882965, 32.644554335467014),
+              center: _marker.point,
+              onTap: (dynamic tapPosition, LatLng latLng) async {
+
+          setState(() async {
+          _markers.add(
+          Marker(
+          point: latLng,
+          width: 50,
+          height: 50,
+          builder: (context) => Icon(Icons.location_on,size:50,color: Colors.red,),
+          ),
+          );
+          handleMarkers();
+          source_coordinates=_markers.first.point;
+          destination_coordinates=_markers.last.point;
+          String source = await getAddressFromLatLng(source_coordinates.latitude,source_coordinates.longitude);
+          _searchController_source.text=source;
+          String destination = await getAddressFromLatLng(destination_coordinates.latitude,destination_coordinates.longitude);
+          _searchCont_destination.text=destination;
+
+          });
+          }
 
 
 
-            ),
+
+          ),
             children: [
 
               TileLayer(
@@ -247,28 +338,16 @@ class _HomePage2State extends State<HomePage2> {
 
                       (source_coordinates!=null && destination_coordinates!=null)? Polyline( points: [source_coordinates,destination_coordinates],
                         color:Colors.green,strokeWidth: 4.0,
-                  ):Polyline( points: [LatLng(0, 0),LatLng(0, 0)],
-                        color:Colors.green,strokeWidth: 4.0,
-                      )
+                  ):null!
 
 
                     ],
                   ),
 
-               MarkerLayer(
-
-markers:[
-  Marker(
-    point:LatLng(30,40),
-    width:80,
-    height:80,
-    builder:(context)=>FlutterLogo()
-  )
-
-]
-
-
+              MarkerLayer(
+                markers:_markers,
               )
+
             ],
           ),
 
@@ -280,22 +359,7 @@ markers:[
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  // Padding(
-                  //   padding:
-                  //   const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
-                  //   child:
-                  //       FloatingActionButton(
-                  //         backgroundColor: Color.fromARGB(255, 6, 42, 70),
-                  //         child: Icon(Icons.share_sharp),
-                  //         onPressed: () {},
-                  //       ),
-                  //
-                  //
-                  // ),
-// SizedBox(
-//
-//
-//     height: MediaQuery.of(context).size.height*0.25) ,
+
                   Container(
                     height: MediaQuery.of(context).size.height / 2,
                     width: MediaQuery.of(context).size.width,
@@ -350,7 +414,7 @@ markers:[
                                     controller: _searchController_source,
                                     decoration: const InputDecoration(
                                       focusColor: Colors.red,
-                                      hintText: 'Search for a place',
+                                      hintText: 'Search for a place or Select from Map',
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: UnderlineInputBorder(
                                         borderSide:
@@ -404,6 +468,9 @@ markers:[
                                         'Selected place: $suggestion ($lat, $lng)');
                                     setState(() {
                                       source_coordinates=LatLng(lat, lng);
+                                      center=source_coordinates;
+                                      _mapController.move(center, 15);
+
                                     });
                                   },
                                 ),
@@ -430,11 +497,11 @@ markers:[
                                         TextFieldConfiguration(
                                       style: const TextStyle(color: Colors.white),
                                       cursorColor: Colors.white,
-                                      controller: _searchController_destination,
+                                      controller: _searchCont_destination,
                                       decoration: const InputDecoration(
                                         fillColor: Colors.red,
                                         focusColor: Colors.red,
-                                        hintText: 'Search for a place',
+                                        hintText: 'Search for a place or Select from Map',
                                         hintStyle:
                                             TextStyle(color: Colors.grey),
                                         border: UnderlineInputBorder(
@@ -485,7 +552,7 @@ markers:[
 
                                       double lat = double.parse(data[0]['lat']);
                                       double lng = double.parse(data[0]['lon']);
-                                      _searchController_destination.text =
+                                      _searchCont_destination.text =
                                           suggestion;
                                       print(
                                           'Selected place: $suggestion ($lat, $lng)');
