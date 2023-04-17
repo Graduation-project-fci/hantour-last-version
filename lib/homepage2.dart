@@ -80,10 +80,10 @@ class _HomePage2State extends State<HomePage2> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    updateLocation((LocationData currentLocation) {
-      // Use the current location here
-      CurrentLocation=LatLng(currentLocation.latitude!, currentLocation.longitude!);
-    });
+    // updateLocation((LocationData currentLocation) {
+    //   // Use the current location here
+    //   CurrentLocation=LatLng(currentLocation.latitude!, currentLocation.longitude!);
+    // });
   }
 
   @override
@@ -228,12 +228,13 @@ class _HomePage2State extends State<HomePage2> {
             options: MapOptions(
               zoom: 14.0,
               maxZoom: 19.0,
-              center: CurrentLocation,
+              center: LatLng(25.696838842882965, 32.644554335467014),
 
 
 
             ),
             children: [
+
               TileLayer(
                 urlTemplate:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.app',
@@ -243,8 +244,6 @@ class _HomePage2State extends State<HomePage2> {
                   PolylineLayer(
                     polylineCulling: false,
                     polylines: [
-                      //LatLng(25.696751832973945, 32.645047861913596),LatLng(25.6944702171113, 32.64794464757829)
-
 
                       (source_coordinates!=null && destination_coordinates!=null)? Polyline( points: [source_coordinates,destination_coordinates],
                         color:Colors.green,strokeWidth: 4.0,
@@ -257,15 +256,18 @@ class _HomePage2State extends State<HomePage2> {
                   ),
 
                MarkerLayer(
-                markers: [
-                  Marker(point:LatLng(25.696838842882965, 32.644554335467014,),
-                  width:80,
-                  height: 80, builder: (context)=>Icon(Icons.gps_fixed),
 
-                  ),
+markers:[
+  Marker(
+    point:LatLng(30,40),
+    width:80,
+    height:80,
+    builder:(context)=>FlutterLogo()
+  )
+
+]
 
 
-                ],
               )
             ],
           ),
@@ -514,6 +516,7 @@ class _HomePage2State extends State<HomePage2> {
                                 decoration: const InputDecoration(
                                     fillColor: Colors.white,
                                     hintText: 'Offer your Fare',
+
                                     border: UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.grey),
@@ -527,8 +530,10 @@ class _HomePage2State extends State<HomePage2> {
                                           BorderSide(color: Colors.grey),
                                     ),
                                     contentPadding: EdgeInsets.all(0),
+
                                     hintStyle: TextStyle(
                                         height: 1, color: Colors.grey)),
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ],
