@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -13,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class HomePage2 extends StatefulWidget {
@@ -24,7 +26,37 @@ class HomePage2 extends StatefulWidget {
 
 class _HomePage2State extends State<HomePage2> {
   late Marker _marker;
+
   final MapController _mapController = MapController();
+  CollectionReference requests = FirebaseFirestore.instance.collection('Requests');
+  void makeRequest(){
+
+  }
+Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
+  final user = FirebaseAuth.instance.currentUser;
+  final driverQuerySnapshot = await FirebaseFirestore.instance
+      .collection('Riders')
+      .doc(user!.uid)
+      .get();
+  return driverQuerySnapshot;
+}
+ String Email='';
+   String PersonalImageLink='';
+    String Name='';
+  Future<void> fetchData() async {
+    final userData = await getUserData();
+    final data = userData.data();
+    setState(() {
+      if(data!=null) {
+        Email = data['email'] ?? '';
+        PersonalImageLink = data['personal_photo'] ?? '';
+        Name = data['name'] ?? '';
+        print('Name: $Name');
+      }
+    });
+
+    // do something with the data
+  }
 
 
   double heightvar = 30;
@@ -99,6 +131,8 @@ class _HomePage2State extends State<HomePage2> {
   void initState()  {
     // TODO: implement initState
     super.initState();
+    fetchData();
+    print(Email);
 
 
     _marker = Marker(
@@ -178,26 +212,24 @@ void handleMarkers(){
                         backgroundColor: const Color.fromARGB(255, 6, 42, 70),
                         radius: 80,
                         backgroundImage:
-                            image != null // add null check operator
-                                ? FileImage(
-                                    image!) // add non-null assertion operator
+                            PersonalImageLink != '' // add null check operator
+                                ? NetworkImage(PersonalImageLink) // add non-null assertion operator
                                 : null,
                       ),
                     ),
-                    const Padding(
+                     Padding(
                       padding: EdgeInsets.only(left: 20, bottom: 20),
-                      child: Text(
-                        'Mostafa M Malik',
+                      child: (Name=='')?Text(''):Text('${Name}',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 25,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    const Padding(
+                     Padding(
                       padding: EdgeInsets.only(left: 20, bottom: 20),
-                      child: Text(
-                        'mostafammalik751@gmail.com',
+                      child:(Email=='')?Text(''): Text(
+                        '${Email}',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
@@ -213,11 +245,13 @@ void handleMarkers(){
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children:  [
+
                   Icon(
                     Icons.car_crash,
                     color: Colors.blue,
                   ),
+
                   Text(
                     'Orders',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

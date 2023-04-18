@@ -7,13 +7,37 @@ import 'package:hantourgo/homePage.dart';
 
 import '../button.dart';
 import '../customloginButton/costumloginbutton.dart';
+import '../homepage2.dart';
 import '../socialLogin.dart';
 import '../widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class loginpage extends StatelessWidget {
   loginpage({Key? key}) : super(key: key);
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  //check is user is Driver or Passenger
+
+  Future<bool> isUserDriver() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return false;
+    }
+
+    final driverQuerySnapshot = await FirebaseFirestore.instance
+        .collection('Drivers')
+        .doc(user.uid)
+        .get();
+
+    final passengerQuerySnapshot = await FirebaseFirestore.instance
+        .collection('Riders')
+        .where('passenger_id', isEqualTo: user.uid)
+        .limit(1)
+        .get();
+
+    return driverQuerySnapshot.exists;
+  }
 
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -79,12 +103,26 @@ class loginpage extends StatelessWidget {
       );
 
       if (userCredential.user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => HomePage(),
-          ),
-        );
+        bool role=await isUserDriver();
+        if(role){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Your are driver.'),
+            ),
+          );
+
+
+        }else{
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePage2(),
+            ),
+          );
+
+        }
+
+
       }
 
       print('User signed in: ${userCredential.user!.uid}');
@@ -217,7 +255,25 @@ class loginpage extends StatelessWidget {
                             email: emailController.text,
                             password: passwordController.text
                         );
-                        Navigator.pushNamed(context, 'Home');
+                        bool role=await isUserDriver();
+                        if(role){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Your are driver.'),
+                            ),
+                          );
+
+
+                        }else{
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => HomePage2(),
+                            ),
+                          );
+
+                        }
+                       // Navigator.pushNamed(context, 'Home');
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -251,7 +307,7 @@ class loginpage extends StatelessWidget {
                             blurRadius: 10,
                           )
                         ]),
-                    child: const Text('Sign In As a Passenger',
+                    child: const Text('Sign In',
 
                         style: TextStyle(
                           color: Colors.white,

@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home:HomePage2(),
+      home:fpage(),
       routes: {
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),
