@@ -15,6 +15,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hantourgo/googleMap/calculateDistance.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 
 
 class HomePage2 extends StatefulWidget {
@@ -29,8 +31,28 @@ class _HomePage2State extends State<HomePage2> {
 
   final MapController _mapController = MapController();
   CollectionReference requests = FirebaseFirestore.instance.collection('Requests');
-  void makeRequest(){
+  Future<void> addPassengerRequest(GeoPoint sourceLocation, GeoPoint destinationLocation) async {
+    final collectionRef = FirebaseFirestore.instance.collection('Request');
 
+    final geo = GeoFlutterFire();
+    final sourceGeoPoint = geo.point(latitude: sourceLocation.latitude, longitude: sourceLocation.longitude);
+    final destinationGeoPoint = geo.point(latitude: destinationLocation.latitude, longitude: destinationLocation.longitude);
+
+    final data = {
+      'rider_id':FirebaseAuth.instance.currentUser!.uid,
+      'source_coordinates': sourceGeoPoint.data,
+      'destination_coordinates': destinationGeoPoint.data,
+      'payment_method': 'cash',
+      'status':'Pending',
+      'source_location':_searchController_source.text.trim(),
+      'destination_location':_searchCont_destination.text.trim(),
+      'price':_offer_controller.text.trim(),
+      'image':PersonalImageLink
+
+
+    };
+
+    await collectionRef.add(data);
   }
 Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
   final user = FirebaseAuth.instance.currentUser;
@@ -80,6 +102,7 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
       });
     }
   }
+  TextEditingController _offer_controller=TextEditingController();
   Future<void> _updateMarkerPosition() async {
     try {
       // retrieve the user's current location using geolocator
@@ -104,6 +127,7 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
     // call this function again after 5 seconds
     Future.delayed(Duration(seconds: 5), () => _updateMarkerPosition());
   }
+
 
 
 
@@ -177,10 +201,16 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
     }
   }
 
-
+String Distance='';
 void handleMarkers(){
      while(_markers.length>2){
        _markers.removeAt(0);
+       Distance=calculateDistance(_markers.first.point.latitude, _markers.first.point.longitude, _markers.last.point.latitude, _markers.last.point.longitude);
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+           content: Text('Distance is ${Distance} '),
+         ),
+       );
 
 
      }
@@ -350,6 +380,9 @@ void handleMarkers(){
           _searchController_source.text=source;
           String destination = await getAddressFromLatLng(destination_coordinates.latitude,destination_coordinates.longitude);
           _searchCont_destination.text=destination;
+
+
+
 
           });
           }
@@ -612,7 +645,8 @@ void handleMarkers(){
                               width: MediaQuery.of(context).size.width - 80,
                               height: 40,
                               child: TextFormField(
-                                keyboardType: TextInputType.text,
+                                controller: _offer_controller,
+                                keyboardType: TextInputType.number,
                                 obscureText: false,
                                 decoration: const InputDecoration(
                                     fillColor: Colors.white,
@@ -669,7 +703,18 @@ void handleMarkers(){
                           margin: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if(_searchController_source.text.isNotEmpty && _searchCont_destination.text.isNotEmpty && _offer_controller.text.isNotEmpty){
+                                addPassengerRequest(GeoPoint(source_coordinates.latitude, source_coordinates.longitude),
+                                    GeoPoint(destination_coordinates.latitude, destination_coordinates.longitude));
+
+                              }
+                              addPassengerRequest(GeoPoint(source_coordinates.latitude, source_coordinates.longitude),
+                                  GeoPoint(destination_coordinates.latitude, destination_coordinates.longitude));
+                              _searchCont_destination.text='';
+                              _searchController_source.text='';
+                              _offer_controller.text='';
+                            },
                             child: Container(
                               alignment: Alignment.center,
                               height: 55,
