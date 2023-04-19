@@ -18,7 +18,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hantourgo/googleMap/calculateDistance.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 
-
 class HomePage2 extends StatefulWidget {
   const HomePage2({super.key});
 
@@ -30,46 +29,51 @@ class _HomePage2State extends State<HomePage2> {
   late Marker _marker;
 
   final MapController _mapController = MapController();
-  CollectionReference requests = FirebaseFirestore.instance.collection('Requests');
-  Future<void> addPassengerRequest(GeoPoint sourceLocation, GeoPoint destinationLocation) async {
+  CollectionReference requests =
+      FirebaseFirestore.instance.collection('Requests');
+  Future<void> addPassengerRequest(
+      GeoPoint sourceLocation, GeoPoint destinationLocation) async {
     final collectionRef = FirebaseFirestore.instance.collection('Request');
 
     final geo = GeoFlutterFire();
-    final sourceGeoPoint = geo.point(latitude: sourceLocation.latitude, longitude: sourceLocation.longitude);
-    final destinationGeoPoint = geo.point(latitude: destinationLocation.latitude, longitude: destinationLocation.longitude);
+    final sourceGeoPoint = geo.point(
+        latitude: sourceLocation.latitude, longitude: sourceLocation.longitude);
+    final destinationGeoPoint = geo.point(
+        latitude: destinationLocation.latitude,
+        longitude: destinationLocation.longitude);
 
     final data = {
-      'rider_id':FirebaseAuth.instance.currentUser!.uid,
+      'rider_id': FirebaseAuth.instance.currentUser!.uid,
       'source_coordinates': sourceGeoPoint.data,
       'destination_coordinates': destinationGeoPoint.data,
       'payment_method': 'cash',
-      'status':'Pending',
-      'source_location':_searchController_source.text.trim(),
-      'destination_location':_searchCont_destination.text.trim(),
-      'price':_offer_controller.text.trim(),
-      'image':PersonalImageLink
-
-
+      'status': 'Pending',
+      'source_location': _searchController_source.text.trim(),
+      'destination_location': _searchCont_destination.text.trim(),
+      'price': _offer_controller.text.trim(),
+      'image': PersonalImageLink
     };
 
     await collectionRef.add(data);
   }
-Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-  final user = FirebaseAuth.instance.currentUser;
-  final driverQuerySnapshot = await FirebaseFirestore.instance
-      .collection('Riders')
-      .doc(user!.uid)
-      .get();
-  return driverQuerySnapshot;
-}
- String Email='';
-   String PersonalImageLink='';
-    String Name='';
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final driverQuerySnapshot = await FirebaseFirestore.instance
+        .collection('Riders')
+        .doc(user!.uid)
+        .get();
+    return driverQuerySnapshot;
+  }
+
+  String Email = '';
+  String PersonalImageLink = '';
+  String Name = '';
   Future<void> fetchData() async {
     final userData = await getUserData();
     final data = userData.data();
     setState(() {
-      if(data!=null) {
+      if (data != null) {
         Email = data['email'] ?? '';
         PersonalImageLink = data['personal_photo'] ?? '';
         Name = data['name'] ?? '';
@@ -79,7 +83,6 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
 
     // do something with the data
   }
-
 
   double heightvar = 30;
   double _height = 300.0;
@@ -102,7 +105,8 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
       });
     }
   }
-  TextEditingController _offer_controller=TextEditingController();
+
+  TextEditingController _offer_controller = TextEditingController();
   Future<void> _updateMarkerPosition() async {
     try {
       // retrieve the user's current location using geolocator
@@ -118,8 +122,9 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
       setState(() {
         _marker = updatedMarker;
 
-        (_searchController_source.text=="")?  _mapController.move(_marker.point, 15.0): null;
-
+        (_searchController_source.text == "")
+            ? _mapController.move(_marker.point, 15.0)
+            : null;
       });
     } catch (e) {
       print('Error retrieving location: $e');
@@ -128,19 +133,17 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
     Future.delayed(Duration(seconds: 5), () => _updateMarkerPosition());
   }
 
-
-
-
-  var CurrentLocation=LatLng(0, 0);
+  var CurrentLocation = LatLng(0, 0);
   List<Marker> _markers = [];
 
   final _searchController_source = TextEditingController();
   final _searchCont_destination = TextEditingController();
-    var source_coordinates=LatLng(0, 0);
-   var destination_coordinates=LatLng(0, 0);
-   var center=LatLng(25.696838842882965, 32.644554335467014);
+  var source_coordinates = LatLng(0, 0);
+  var destination_coordinates = LatLng(0, 0);
+  var center = LatLng(25.696838842882965, 32.644554335467014);
   Future<String> getAddressFromLatLng(double lat, double lng) async {
-    String apiUrl = "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng&zoom=18&addressdetails=1";
+    String apiUrl =
+        "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng&zoom=18&addressdetails=1";
     var response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       var result = json.decode(response.body);
@@ -152,12 +155,11 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
   }
 
   @override
-  void initState()  {
+  void initState() {
     // TODO: implement initState
     super.initState();
     fetchData();
     print(Email);
-
 
     _marker = Marker(
       point: center,
@@ -165,15 +167,17 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
       height: 50,
       builder: (context) => FlutterLogo(),
     );
-    source_coordinates=LatLng(0, 0);
-    destination_coordinates=LatLng(0, 0);
+    source_coordinates = LatLng(0, 0);
+    destination_coordinates = LatLng(0, 0);
     _updateMarkerPosition();
   }
+
   void _handleTap(LatLng latLng) async {
     double latitude = latLng.latitude;
     double longitude = latLng.longitude;
 
-    String url = 'https://nominatim.openstreetmap.org/reverse?lat=$latitude&lon=$longitude&format=jsonv2';
+    String url =
+        'https://nominatim.openstreetmap.org/reverse?lat=$latitude&lon=$longitude&format=jsonv2';
 
     http.Response response = await http.get(Uri.parse(url));
 
@@ -201,21 +205,22 @@ Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
     }
   }
 
-String Distance='';
-void handleMarkers(){
-     while(_markers.length>2){
-       _markers.removeAt(0);
-       Distance=calculateDistance(_markers.first.point.latitude, _markers.first.point.longitude, _markers.last.point.latitude, _markers.last.point.longitude);
-       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
-           content: Text('Distance is ${Distance} '),
-         ),
-       );
-
-
-     }
-}
-
+  String Distance = '';
+  void handleMarkers() {
+    while (_markers.length > 2) {
+      _markers.removeAt(0);
+      Distance = calculateDistance(
+          _markers.first.point.latitude,
+          _markers.first.point.longitude,
+          _markers.last.point.latitude,
+          _markers.last.point.longitude);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Distance is ${Distance} '),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,8 +228,6 @@ void handleMarkers(){
       backgroundColor: Colors.white,
 
       drawer: Drawer(
-
-
         surfaceTintColor: Colors.green,
         child: Column(
           children: [
@@ -241,30 +244,36 @@ void handleMarkers(){
                       child: CircleAvatar(
                         backgroundColor: const Color.fromARGB(255, 6, 42, 70),
                         radius: 80,
-                        backgroundImage:
-                            PersonalImageLink != '' // add null check operator
-                                ? NetworkImage(PersonalImageLink) // add non-null assertion operator
-                                : null,
+                        backgroundImage: PersonalImageLink !=
+                                '' // add null check operator
+                            ? NetworkImage(
+                                PersonalImageLink) // add non-null assertion operator
+                            : null,
                       ),
                     ),
-                     Padding(
+                    Padding(
                       padding: EdgeInsets.only(left: 20, bottom: 20),
-                      child: (Name=='')?Text(''):Text('${Name}',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      child: (Name == '')
+                          ? Text('')
+                          : Text(
+                              '${Name}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            ),
                     ),
-                     Padding(
+                    Padding(
                       padding: EdgeInsets.only(left: 20, bottom: 20),
-                      child:(Email=='')?Text(''): Text(
-                        '${Email}',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      child: (Email == '')
+                          ? Text('')
+                          : Text(
+                              '${Email}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ],
                 )
@@ -275,16 +284,20 @@ void handleMarkers(){
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:  [
-
+                children: [
                   Icon(
                     Icons.car_crash,
                     color: Colors.blue,
                   ),
-
-                  Text(
-                    'Orders',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, 'Orders');
+                    },
+                    child: Text(
+                      'Orders',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   )
                 ],
               ),
@@ -353,68 +366,60 @@ void handleMarkers(){
           child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-
-
           FlutterMap(
             mapController: _mapController,
-
             options: MapOptions(
-              zoom: 15.0,
-              maxZoom: 19.0,
-              center: _marker.point,
-              onTap: (dynamic tapPosition, LatLng latLng) async {
-
-          setState(() async {
-          _markers.add(
-          Marker(
-          point: latLng,
-          width: 50,
-          height: 50,
-          builder: (context) => Icon(Icons.location_on,size:50,color: Colors.red,),
-          ),
-          );
-          handleMarkers();
-          source_coordinates=_markers.first.point;
-          destination_coordinates=_markers.last.point;
-          String source = await getAddressFromLatLng(source_coordinates.latitude,source_coordinates.longitude);
-          _searchController_source.text=source;
-          String destination = await getAddressFromLatLng(destination_coordinates.latitude,destination_coordinates.longitude);
-          _searchCont_destination.text=destination;
-
-
-
-
-          });
-          }
-
-
-
-
-          ),
+                zoom: 15.0,
+                maxZoom: 19.0,
+                center: _marker.point,
+                onTap: (dynamic tapPosition, LatLng latLng) async {
+                  setState(() async {
+                    _markers.add(
+                      Marker(
+                        point: latLng,
+                        width: 50,
+                        height: 50,
+                        builder: (context) => Icon(
+                          Icons.location_on,
+                          size: 50,
+                          color: Colors.red,
+                        ),
+                      ),
+                    );
+                    handleMarkers();
+                    source_coordinates = _markers.first.point;
+                    destination_coordinates = _markers.last.point;
+                    String source = await getAddressFromLatLng(
+                        source_coordinates.latitude,
+                        source_coordinates.longitude);
+                    _searchController_source.text = source;
+                    String destination = await getAddressFromLatLng(
+                        destination_coordinates.latitude,
+                        destination_coordinates.longitude);
+                    _searchCont_destination.text = destination;
+                  });
+                }),
             children: [
-
               TileLayer(
-                urlTemplate:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.app',
-
               ),
-
-                  PolylineLayer(
-                    polylineCulling: false,
-                    polylines: [
-
-                      (source_coordinates!=null && destination_coordinates!=null)? Polyline( points: [source_coordinates,destination_coordinates],
-                        color:Colors.green,strokeWidth: 4.0,
-                  ):null!
-
-
-                    ],
-                  ),
-
+              PolylineLayer(
+                polylineCulling: false,
+                polylines: [
+                  (source_coordinates != null &&
+                          destination_coordinates != null)
+                      ? Polyline(
+                          points: [source_coordinates, destination_coordinates],
+                          color: Colors.green,
+                          strokeWidth: 4.0,
+                        )
+                      : null!
+                ],
+              ),
               MarkerLayer(
-                markers:_markers,
+                markers: _markers,
               )
-
             ],
           ),
 
@@ -426,7 +431,6 @@ void handleMarkers(){
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-
                   Container(
                     height: MediaQuery.of(context).size.height / 2,
                     width: MediaQuery.of(context).size.width,
@@ -481,7 +485,8 @@ void handleMarkers(){
                                     controller: _searchController_source,
                                     decoration: const InputDecoration(
                                       focusColor: Colors.red,
-                                      hintText: 'Search for a place or Select from Map',
+                                      hintText:
+                                          'Search for a place or Select from Map',
                                       hintStyle: TextStyle(color: Colors.grey),
                                       border: UnderlineInputBorder(
                                         borderSide:
@@ -516,7 +521,8 @@ void handleMarkers(){
                                   itemBuilder: (context, suggestion) {
                                     return ListTile(
                                       textColor: Colors.white,
-                                      tileColor: const Color.fromARGB(255, 6, 42, 70),
+                                      tileColor:
+                                          const Color.fromARGB(255, 6, 42, 70),
                                       title: Text(suggestion),
                                     );
                                   },
@@ -534,10 +540,9 @@ void handleMarkers(){
                                     print(
                                         'Selected place: $suggestion ($lat, $lng)');
                                     setState(() {
-                                      source_coordinates=LatLng(lat, lng);
-                                      center=source_coordinates;
+                                      source_coordinates = LatLng(lat, lng);
+                                      center = source_coordinates;
                                       _mapController.move(center, 15);
-
                                     });
                                   },
                                 ),
@@ -562,13 +567,15 @@ void handleMarkers(){
                                   child: TypeAheadField(
                                     textFieldConfiguration:
                                         TextFieldConfiguration(
-                                      style: const TextStyle(color: Colors.white),
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                       cursorColor: Colors.white,
                                       controller: _searchCont_destination,
                                       decoration: const InputDecoration(
                                         fillColor: Colors.red,
                                         focusColor: Colors.red,
-                                        hintText: 'Search for a place or Select from Map',
+                                        hintText:
+                                            'Search for a place or Select from Map',
                                         hintStyle:
                                             TextStyle(color: Colors.grey),
                                         border: UnderlineInputBorder(
@@ -619,12 +626,12 @@ void handleMarkers(){
 
                                       double lat = double.parse(data[0]['lat']);
                                       double lng = double.parse(data[0]['lon']);
-                                      _searchCont_destination.text =
-                                          suggestion;
+                                      _searchCont_destination.text = suggestion;
                                       print(
                                           'Selected place: $suggestion ($lat, $lng)');
                                       setState(() {
-                                        destination_coordinates=LatLng(lat, lng);
+                                        destination_coordinates =
+                                            LatLng(lat, lng);
                                       });
                                     },
                                   ),
@@ -641,7 +648,8 @@ void handleMarkers(){
                             ),
                             Container(
                               // padding: EdgeInsets.all(),
-                              margin: const EdgeInsets.symmetric(horizontal: 20),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               width: MediaQuery.of(context).size.width - 80,
                               height: 40,
                               child: TextFormField(
@@ -651,7 +659,6 @@ void handleMarkers(){
                                 decoration: const InputDecoration(
                                     fillColor: Colors.white,
                                     hintText: 'Offer your Fare',
-
                                     border: UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.grey),
@@ -665,7 +672,6 @@ void handleMarkers(){
                                           BorderSide(color: Colors.grey),
                                     ),
                                     contentPadding: EdgeInsets.all(0),
-
                                     hintStyle: TextStyle(
                                         height: 1, color: Colors.grey)),
                                 style: TextStyle(color: Colors.white),
@@ -704,16 +710,23 @@ void handleMarkers(){
                               horizontal: 20, vertical: 10),
                           child: InkWell(
                             onTap: () {
-                              if(_searchController_source.text.isNotEmpty && _searchCont_destination.text.isNotEmpty && _offer_controller.text.isNotEmpty){
-                                addPassengerRequest(GeoPoint(source_coordinates.latitude, source_coordinates.longitude),
-                                    GeoPoint(destination_coordinates.latitude, destination_coordinates.longitude));
-
+                              if (_searchController_source.text.isNotEmpty &&
+                                  _searchCont_destination.text.isNotEmpty &&
+                                  _offer_controller.text.isNotEmpty) {
+                                addPassengerRequest(
+                                    GeoPoint(source_coordinates.latitude,
+                                        source_coordinates.longitude),
+                                    GeoPoint(destination_coordinates.latitude,
+                                        destination_coordinates.longitude));
                               }
-                              addPassengerRequest(GeoPoint(source_coordinates.latitude, source_coordinates.longitude),
-                                  GeoPoint(destination_coordinates.latitude, destination_coordinates.longitude));
-                              _searchCont_destination.text='';
-                              _searchController_source.text='';
-                              _offer_controller.text='';
+                              addPassengerRequest(
+                                  GeoPoint(source_coordinates.latitude,
+                                      source_coordinates.longitude),
+                                  GeoPoint(destination_coordinates.latitude,
+                                      destination_coordinates.longitude));
+                              _searchCont_destination.text = '';
+                              _searchController_source.text = '';
+                              _offer_controller.text = '';
                             },
                             child: Container(
                               alignment: Alignment.center,

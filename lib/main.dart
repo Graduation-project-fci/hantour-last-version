@@ -21,6 +21,7 @@ import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
 import 'package:hantourgo/screens/signup.dart';
 import 'package:hantourgo/screens/registerationScreens/driver_signup.dart';
 import 'package:hantourgo/screens/driverscreens/driver_home.dart';
+import 'package:hantourgo/teckets/ticket.dart';
 import 'package:http/http.dart' as http;
 import 'screens/newFile.dart';
 
@@ -32,6 +33,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MyApp());
 }
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -43,7 +45,6 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -51,13 +52,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home:fpage(),
+      home: Orders(),
       routes: {
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),
         'signup': (context) => signupscreen(),
         'Home': (context) => HomePage(),
         'tickethistory': (context) => reportOfTickets(),
+        'Orders': (context) => Orders(),
 
         'basicinfo': (context) => BasicInfo(),
         'certificate': (context) => certificate_vehicle(),
@@ -67,8 +69,8 @@ class MyApp extends StatelessWidget {
         'select': (context) => selectPag(),
         'id': (context) => nationalID(),
         'rating': (context) => rating(),
-        'signupDriver':(context)=>signupscreenDriver(),
-        'MapPage':(context)=>MapPage()
+        'signupDriver': (context) => signupscreenDriver(),
+        'MapPage': (context) => MapPage()
       },
     );
   }
