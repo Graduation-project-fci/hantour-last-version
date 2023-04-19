@@ -369,36 +369,10 @@ class _HomePage2State extends State<HomePage2> {
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-                zoom: 15.0,
-                maxZoom: 19.0,
-                center: _marker.point,
-                onTap: (dynamic tapPosition, LatLng latLng) async {
-                  setState(() async {
-                    _markers.add(
-                      Marker(
-                        point: latLng,
-                        width: 50,
-                        height: 50,
-                        builder: (context) => Icon(
-                          Icons.location_on,
-                          size: 50,
-                          color: Colors.red,
-                        ),
-                      ),
-                    );
-                    handleMarkers();
-                    source_coordinates = _markers.first.point;
-                    destination_coordinates = _markers.last.point;
-                    String source = await getAddressFromLatLng(
-                        source_coordinates.latitude,
-                        source_coordinates.longitude);
-                    _searchController_source.text = source;
-                    String destination = await getAddressFromLatLng(
-                        destination_coordinates.latitude,
-                        destination_coordinates.longitude);
-                    _searchCont_destination.text = destination;
-                  });
-                }),
+              zoom: 15.0,
+              maxZoom: 19.0,
+              center: _marker.point,
+            ),
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
