@@ -8,6 +8,7 @@ import 'package:hantourgo/googleMap/googlemap.dart';
 import 'package:hantourgo/homePage.dart';
 import 'package:hantourgo/reports/listoftickets.dart';
 import 'package:hantourgo/screens/driverscreens/rating.dart';
+import 'package:hantourgo/screens/driverscreens/wallet.dart';
 import 'package:hantourgo/screens/loginPage%D9%90Amir.dart';
 import 'package:hantourgo/screens/loginpage.dart';
 import 'package:hantourgo/screens/pasRegister.dart';
@@ -52,8 +53,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Orders(),
+      home: driverHome(),
       routes: {
+        'wallet': (context) => mywallet(),
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),
         'signup': (context) => signupscreen(),
@@ -70,7 +72,7 @@ class MyApp extends StatelessWidget {
         'id': (context) => nationalID(),
         'rating': (context) => rating(),
         'signupDriver': (context) => signupscreenDriver(),
-        'MapPage': (context) => MapPage()
+        // 'MapPage': (context) => MapPage()
       },
     );
   }
