@@ -39,7 +39,6 @@ class loginpage extends StatelessWidget {
     return driverQuerySnapshot.exists;
   }
 
-
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   Future<GoogleSignInAccount?> signInWithGoogle() async {
@@ -103,26 +102,21 @@ class loginpage extends StatelessWidget {
       );
 
       if (userCredential.user != null) {
-        bool role=await isUserDriver();
-        if(role){
+        bool role = await isUserDriver();
+        if (role) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Your are driver.'),
             ),
           );
-
-
-        }else{
+        } else {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => HomePage2(),
             ),
           );
-
         }
-
-
       }
 
       print('User signed in: ${userCredential.user!.uid}');
@@ -187,7 +181,8 @@ class loginpage extends StatelessWidget {
                         );
                         if (value!.isEmpty) {
                           return 'Please enter some text';
-                        }if(!regex.hasMatch(value.trim())){
+                        }
+                        if (!regex.hasMatch(value.trim())) {
                           return 'Please Enter Valid Email address';
                         }
                         return null;
@@ -220,10 +215,10 @@ class loginpage extends StatelessWidget {
                     ],
                   ),
                   child: Form(
-                    key:passkey,
+                    key: passkey,
                     child: TextFormField(
                       validator: (value) {
-                        if (value!.length<6) {
+                        if (value!.length < 6) {
                           return 'Too Short Password';
                         }
                         return null;
@@ -247,33 +242,32 @@ class loginpage extends StatelessWidget {
                 // Costumbuttonforlogin('login', 'Home', username!, password!,
                 //     emailController, passwordController),
                 InkWell(
-                  onTap: () async{
-                    if (_formKey.currentState!.validate() && passkey.currentState!.validate()) {
+                  onTap: () async {
+                    if (_formKey.currentState!.validate() &&
+                        passkey.currentState!.validate()) {
                       // Form is valid, do something here
                       try {
-                        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text
-                        );
-                        bool role=await isUserDriver();
-                        if(role){
+                        final credential = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: emailController.text,
+                                password: passwordController.text);
+                        bool role = await isUserDriver();
+                        if (role) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Your are driver.'),
                             ),
                           );
-
-
-                        }else{
+                          Navigator.pushNamed(context, 'Driverhome');
+                        } else {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) => HomePage2(),
                             ),
                           );
-
                         }
-                       // Navigator.pushNamed(context, 'Home');
+                        // Navigator.pushNamed(context, 'Home');
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -281,25 +275,22 @@ class loginpage extends StatelessWidget {
                               content: Text('No user found for that email.'),
                             ),
                           );
-
                         } else if (e.code == 'wrong-password') {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Wrong password provided for that user.'),
+                              content: Text(
+                                  'Wrong password provided for that user.'),
                             ),
                           );
-
                         }
                       }
                     }
-
-
                   },
                   child: Container(
                     alignment: Alignment.center,
                     height: 55,
                     decoration: BoxDecoration(
-                        color:const Color.fromARGB(255, 0, 0, 128),
+                        color: const Color.fromARGB(255, 0, 0, 128),
                         borderRadius: BorderRadius.circular(6),
                         boxShadow: [
                           BoxShadow(
@@ -307,19 +298,19 @@ class loginpage extends StatelessWidget {
                             blurRadius: 10,
                           )
                         ]),
-                    child: const Text('Sign In',
-
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),),
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-
                 ),
                 SizedBox(height: 25),
                 button('Select User Type', 'select'),
                 const SizedBox(height: 40),
-                 socialLogin(),
+                socialLogin(),
               ],
             ),
           ),
@@ -340,18 +331,14 @@ class loginpage extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: ()  {
-
-              },
+              onTap: () {},
               child: const Text(
                 'Sign Up',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-
                 ),
-
               ),
             ),
           ],
