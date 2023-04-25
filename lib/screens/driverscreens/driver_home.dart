@@ -34,7 +34,7 @@ class _HomePage2State extends State<driverHome> {
       FirebaseFirestore.instance.collection('Requests');
   Future<void> addPassengerRequest(
       GeoPoint sourceLocation, GeoPoint destinationLocation) async {
-    final collectionRef = FirebaseFirestore.instance.collection('Request');
+    final collectionRef = FirebaseFirestore.instance.collection('Requests');
 
     final geo = GeoFlutterFire();
     final sourceGeoPoint = geo.point(
@@ -339,7 +339,9 @@ class _HomePage2State extends State<driverHome> {
               margin: const EdgeInsets.all(10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
+
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                 children: const [
                   Icon(
                     Icons.phone,
@@ -350,6 +352,26 @@ class _HomePage2State extends State<driverHome> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   )
                 ],
+              ),
+            ),GestureDetector(
+              onTap: (){print('logout');},
+              child: Container(
+                margin: const EdgeInsets.all(10),
+
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Icon(
+                      Icons.logout_outlined,
+                      color: Colors.blue,
+                    ),
+                    Text(
+                      'Log Out',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
               ),
             )
           ],
@@ -364,7 +386,7 @@ class _HomePage2State extends State<driverHome> {
             options: MapOptions(
               zoom: 11.0,
               maxZoom: 19.0,
-              center: _marker.point,
+              center: LatLng(20.2332,23.432)//_marker.point,
             ),
           ),
 
@@ -377,14 +399,14 @@ class _HomePage2State extends State<driverHome> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height / 2,
+                    height: MediaQuery.of(context).size.height / 2.1,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 6, 42, 70),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
@@ -447,7 +469,7 @@ class _HomePage2State extends State<driverHome> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
-                                        height: 90,
+                                        height: 30,
                                       ),
                                       Text("Price offered: \$ 15",
                                           style: TextStyle(
@@ -477,7 +499,7 @@ class _HomePage2State extends State<driverHome> {
                           ),
                           margin: EdgeInsets.all(10),
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 2.8,
+                          height: MediaQuery.of(context).size.height / 3,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(40),
@@ -488,9 +510,9 @@ class _HomePage2State extends State<driverHome> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(5),
                           alignment: Alignment.center,
-                          height: 55,
+                          height: 50,
                           decoration: BoxDecoration(
                               color: Colors.green,
                               borderRadius: BorderRadius.circular(6),
