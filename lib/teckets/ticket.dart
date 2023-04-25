@@ -53,26 +53,42 @@ class _OrdersState extends State<Orders> {
                           child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             width: MediaQuery.of(context).size.width * 0.9,
-                            child: Row(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text(
-                                  "${document['source_location']}",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(25)),
+                                  child: Text(
+                                    "${document['source_location']}",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                                 SizedBox(
+                                  height: 50,
                                   width: 50,
-                                  child: Icon(Icons.arrow_forward),
+                                  child: Icon(
+                                    Icons.arrow_downward,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                Text(
-                                  "${document['destination_location']}",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                )
+                                Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: Colors.amber,
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    child: Text(
+                                      "${document['destination_location']}",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ))
                               ],
                             ),
                           ),
@@ -106,9 +122,12 @@ class _OrdersState extends State<Orders> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            'Hantour Company',
-                            style: TextStyle(color: Colors.white),
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Hantour Company',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           )
                         ],
                       )
@@ -116,7 +135,7 @@ class _OrdersState extends State<Orders> {
                   ),
                   margin: EdgeInsets.all(10),
                   width: MediaQuery.of(context).size.width,
-                  height: 200,
+                  height: 500,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(35),
