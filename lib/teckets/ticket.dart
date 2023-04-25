@@ -135,7 +135,7 @@ class _OrdersState extends State<Orders> {
                   ),
                   margin: EdgeInsets.all(10),
                   width: MediaQuery.of(context).size.width,
-                  height: 500,
+                  height: 400,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(35),
