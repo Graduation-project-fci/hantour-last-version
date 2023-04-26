@@ -33,8 +33,7 @@ class _HomePage2State extends State<HomePage2> {
       FirebaseFirestore.instance.collection('Requests');
   Future<void> addPassengerRequest(
       GeoPoint sourceLocation, GeoPoint destinationLocation) async {
-    final collectionRef = FirebaseFirestore.instance.collection('Request');
-
+    final collectionRef = FirebaseFirestore.instance.collection('Requests');
     final geo = GeoFlutterFire();
     final sourceGeoPoint = geo.point(
         latitude: sourceLocation.latitude, longitude: sourceLocation.longitude);

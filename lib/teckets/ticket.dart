@@ -24,6 +24,7 @@ class _OrdersState extends State<Orders> {
             );
           }
           return ListView(
+            scrollDirection: Axis.vertical,
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               return Center(
                 child: Container(
@@ -37,7 +38,9 @@ class _OrdersState extends State<Orders> {
                             backgroundColor: Colors.white,
                             child: ClipOval(
                               child: Image(
-                                image: NetworkImage('${document['image']}'),
+                                // image: NetworkImage('${document['image']}'),
+                                image: NetworkImage(
+                                    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
                                 fit: BoxFit.cover, // Add this line
                                 width:
                                     60, // Add this line to specify the width of the image
@@ -49,48 +52,47 @@ class _OrdersState extends State<Orders> {
                         ],
                       ),
                       Expanded(
-                        child: SingleChildScrollView(
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Container(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(25)),
+                                child: Text(
+                                  "${document['source_location']}",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Icon(
+                                  Icons.arrow_downward,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
                                   padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: Colors.amber,
                                       borderRadius: BorderRadius.circular(25)),
                                   child: Text(
-                                    "${document['source_location']}",
+                                    "${document['destination_location']}",
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: Icon(
-                                    Icons.arrow_downward,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        color: Colors.amber,
-                                        borderRadius:
-                                            BorderRadius.circular(25)),
-                                    child: Text(
-                                      "${document['destination_location']}",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ))
-                              ],
-                            ),
+                                  ))
+                            ],
                           ),
                         ),
                       ),
@@ -118,7 +120,6 @@ class _OrdersState extends State<Orders> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 29),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
