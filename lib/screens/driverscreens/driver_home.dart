@@ -52,7 +52,8 @@ class _HomePage2State extends State<driverHome> {
       'source_location': _searchController_source.text.trim(),
       'destination_location': _searchCont_destination.text.trim(),
       'price': _offer_controller.text.trim(),
-      'image': PersonalImageLink
+      'image': PersonalImageLink,
+      'name': Name,
     };
 
     await collectionRef.add(data);
@@ -68,6 +69,7 @@ class _HomePage2State extends State<driverHome> {
   }
 
   String Email = '';
+
   String PersonalImageLink = '';
   String Name = '';
   Future<void> fetchData() async {
@@ -76,7 +78,9 @@ class _HomePage2State extends State<driverHome> {
     setState(() {
       if (data != null) {
         Email = data['email'] ?? '';
-        PersonalImageLink = data['personal_photo'] ?? '';
+
+        PersonalImageLink = data['personal_photo'] ??
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/2048px-User_icon_2.svg.png';
         Name = data['name'] ?? '';
         print('Name: $Name');
       }
@@ -339,9 +343,7 @@ class _HomePage2State extends State<driverHome> {
               margin: const EdgeInsets.all(10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                 children: const [
                   Icon(
                     Icons.phone,
@@ -353,11 +355,13 @@ class _HomePage2State extends State<driverHome> {
                   )
                 ],
               ),
-            ),GestureDetector(
-              onTap: (){print('logout');},
+            ),
+            GestureDetector(
+              onTap: () {
+                print('logout');
+              },
               child: Container(
                 margin: const EdgeInsets.all(10),
-
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -368,7 +372,8 @@ class _HomePage2State extends State<driverHome> {
                     ),
                     Text(
                       'Log Out',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -384,10 +389,10 @@ class _HomePage2State extends State<driverHome> {
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-              zoom: 11.0,
-              maxZoom: 19.0,
-              center: LatLng(20.2332,23.432)//_marker.point,
-            ),
+                zoom: 11.0,
+                maxZoom: 19.0,
+                center: LatLng(20.2332, 23.432) //_marker.point,
+                ),
           ),
 
           // /********************************************** */

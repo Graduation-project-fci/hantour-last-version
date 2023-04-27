@@ -46,6 +46,7 @@ class _OrdersState extends State<Orders> {
                               ),
                             ),
                           ),
+                          Text('${document['name']}')
                         ],
                       ),
                       Expanded(
