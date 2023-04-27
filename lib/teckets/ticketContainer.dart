@@ -61,6 +61,7 @@ class _ticketCardState extends State<ticketCard> {
                   'assets/images/5.jpg',
                 ),
               ),
+              Text('')
             ],
           ),
           Container(
@@ -74,7 +75,7 @@ class _ticketCardState extends State<ticketCard> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  "",
+                  "Ahmed",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )
               ],

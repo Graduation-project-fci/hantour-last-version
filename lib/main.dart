@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         'wallet': (context) => mywallet(),
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),
-        'Driverhome': (context) => driverHome(),
+        'Driverhome': (context) => driverHome('', '', '', '', ''),
         'signup': (context) => signupscreen(),
         'Home': (context) => HomePage(),
         'tickethistory': (context) => reportOfTickets(),
