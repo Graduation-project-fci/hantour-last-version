@@ -20,8 +20,17 @@ import 'package:hantourgo/googleMap/calculateDistance.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 
 class driverHome extends StatefulWidget {
-  const driverHome({super.key});
+  // const driverHome({super.key});
+  late String image, source, distnation, price, distance;
 
+  driverHome(String image, String source, String distnation, String price,
+      String distance) {
+    this.image = image;
+    this.source = source;
+    this.distance = distance;
+    this.distnation = distnation;
+    this.price = price;
+  }
   @override
   State<driverHome> createState() => _HomePage2State();
 }
@@ -339,9 +348,7 @@ class _HomePage2State extends State<driverHome> {
               margin: const EdgeInsets.all(10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                 children: const [
                   Icon(
                     Icons.phone,
@@ -353,11 +360,13 @@ class _HomePage2State extends State<driverHome> {
                   )
                 ],
               ),
-            ),GestureDetector(
-              onTap: (){print('logout');},
+            ),
+            GestureDetector(
+              onTap: () {
+                print('logout');
+              },
               child: Container(
                 margin: const EdgeInsets.all(10),
-
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -368,7 +377,8 @@ class _HomePage2State extends State<driverHome> {
                     ),
                     Text(
                       'Log Out',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -384,10 +394,10 @@ class _HomePage2State extends State<driverHome> {
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-              zoom: 11.0,
-              maxZoom: 19.0,
-              center: LatLng(20.2332,23.432)//_marker.point,
-            ),
+                zoom: 11.0,
+                maxZoom: 19.0,
+                center: LatLng(20.2332, 23.432) //_marker.point,
+                ),
           ),
 
           // /********************************************** */
@@ -414,7 +424,7 @@ class _HomePage2State extends State<driverHome> {
                             children: [
                               Container(
                                   alignment: Alignment.topLeft,
-                                  margin: EdgeInsets.only(right: 10),
+                                  margin: EdgeInsets.only(right: 5),
                                   // width: 50,
                                   // height: 50,
                                   child: Row(
@@ -441,29 +451,42 @@ class _HomePage2State extends State<driverHome> {
                                     ],
                                   )),
                               Container(
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        "Source : Luxor City",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text("Distnation : Awamya",
+                                  child: Column(
+                                children: [
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                          "${widget.source}",
                                           style: TextStyle(
                                               fontSize: 15,
-                                              fontWeight: FontWeight.bold))
-                                    ]),
-                              ),
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ]),
+                                  SizedBox(
+                                    child: Icon(Icons.arrow_downward),
+                                  ),
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                          "${widget.distnation}",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ]),
+                                ],
+                              )),
                               Container(
                                 child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                        "about 15 meter",
+                                        "علي بعد  ${widget.distance} متر",
                                         style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold),
@@ -471,7 +494,7 @@ class _HomePage2State extends State<driverHome> {
                                       SizedBox(
                                         height: 30,
                                       ),
-                                      Text("Price offered: \$ 15",
+                                      Text("السعر المعروض: ${widget.price}",
                                           style: TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold))
@@ -479,6 +502,9 @@ class _HomePage2State extends State<driverHome> {
                               ),
                               Container(
                                   margin: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 6, 42, 70),
+                                      borderRadius: BorderRadius.circular(15)),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -488,16 +514,17 @@ class _HomePage2State extends State<driverHome> {
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold)),
                                       IconButton(
-                                          onPressed: _makePhoneCall,
-                                          icon: Icon(
-                                            Icons.phone,
-                                            color: Colors.green,
-                                          ))
+                                        onPressed: _makePhoneCall,
+                                        icon: Icon(
+                                          Icons.phone,
+                                          color: Colors.green,
+                                        ),
+                                      )
                                     ],
                                   ))
                             ],
                           ),
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(5),
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height / 3,
                           decoration: BoxDecoration(
