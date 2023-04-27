@@ -6,14 +6,15 @@ import 'package:hantourgo/teckets/ticketContainer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TicketData {
+  late String _id;
   late String ImageLink;
-  late String source;
-  late String distnation;
-  late String distance;
-  late String price;
-  TicketData(String ImageLink, String source, String distnation,
+  late String source = '';
+  late String distnation = '';
+  late String distance = '';
+  late String price = '';
+  TicketData(String _id, this.ImageLink, String source, String distnation,
       String distance, String price) {
-    this.ImageLink = ImageLink;
+    this._id = _id;
     this.source = source;
     this.distnation = distnation;
     this.distance = distance;
@@ -47,6 +48,7 @@ class _OrdersState extends State<Orders> {
               return GestureDetector(
                 onTap: () {
                   final x = TicketData(
+                      '${document['di']}',
                       'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80',
                       '${document['source_location']}',
                       '${document['destination_location']}',
@@ -60,8 +62,7 @@ class _OrdersState extends State<Orders> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => driverHome(x.ImageLink,
-                              x.source, x.distnation, x.distance, x.price))));
+                          builder: ((context) => driverHome(id: ''))));
                 },
                 child: Center(
                   child: Container(

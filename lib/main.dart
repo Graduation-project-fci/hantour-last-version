@@ -53,12 +53,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Orders(),
+      home: driverHome(
+        id: 'x',
+      ),
       routes: {
         'wallet': (context) => mywallet(),
         "login": (context) => loginpage(),
         // 'passSignUp': (context) => pasRegister(),
-        'Driverhome': (context) => driverHome('', '', '', '', ''),
+        'Driverhome': (context) => driverHome(id: 'x'),
         'signup': (context) => signupscreen(),
         'Home': (context) => HomePage(),
         'tickethistory': (context) => reportOfTickets(),

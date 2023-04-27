@@ -21,26 +21,40 @@ import 'package:geoflutterfire2/geoflutterfire2.dart';
 
 class driverHome extends StatefulWidget {
   // const driverHome({super.key});
-  late String image, source, distnation, price, distance;
+  final String id;
+  String image = '', source = '', distnation = '', price = '', distance = '';
 
-  driverHome(String image, String source, String distnation, String price,
-      String distance) {
-    this.image = image;
-    this.source = source;
-    this.distance = distance;
-    this.distnation = distnation;
-    this.price = price;
-  }
+  driverHome({Key? key, required this.id}) : super(key: key);
   @override
   State<driverHome> createState() => _HomePage2State();
 }
 
 class _HomePage2State extends State<driverHome> {
   late Marker _marker;
+  bool show = true;
+  Map<String, dynamic> request = {};
+
+  Future<Map<String, dynamic>?> readRequest(String requestId) async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection('Requests')
+        .doc(requestId)
+        .get();
+    return snapshot.data();
+  }
+
+  @override
+  Future<void> setState(VoidCallback fn) async {
+    // TODO: implement setState
+    super.setState(fn);
+    show = (widget.id == '') ? false : true;
+  }
 
   final MapController _mapController = MapController();
   CollectionReference requests =
       FirebaseFirestore.instance.collection('Requests');
+
+  static var id;
   Future<void> addPassengerRequest(
       GeoPoint sourceLocation, GeoPoint destinationLocation) async {
     final collectionRef = FirebaseFirestore.instance.collection('Request');
@@ -177,10 +191,53 @@ class _HomePage2State extends State<driverHome> {
     }
   }
 
+  readrequest() async {
+    if (widget.id != '') {
+      request = (await readRequest('30hGuRufm3bF7B0huYaE')) ?? {};
+      print(request);
+    }
+  }
+
+  // @override
+  // Future<void> initState() async {
+  //   super.initState();
+  //   if (widget.id == '') {
+  //     setState(() {
+  //       show = false;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       show = true;
+  //     });
+  //     await readrequest();
+  //   }
+  //   fetchData();
+  //   print(Email);
+
+  //   _marker = Marker(
+  //     point: center,
+  //     width: 50,
+  //     height: 50,
+  //     builder: (context) => FlutterLogo(),
+  //   );
+  //   source_coordinates = LatLng(0, 0);
+  //   destination_coordinates = LatLng(0, 0);
+  //   _updateMarkerPosition();
+  // }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (widget.id == '') {
+      setState(() {
+        show = false;
+      });
+    } else {
+      setState(() {
+        show = true;
+      });
+      readrequest();
+    }
     fetchData();
     print(Email);
 
@@ -368,6 +425,7 @@ class _HomePage2State extends State<driverHome> {
             GestureDetector(
               onTap: () {
                 print('logout');
+                FirebaseAuth.instance.signOut();
               },
               child: Container(
                 margin: const EdgeInsets.all(10),
@@ -391,209 +449,226 @@ class _HomePage2State extends State<driverHome> {
           ],
         ),
       ), // drawer(),
-      body: Center(
-          child: Stack(
-        alignment: Alignment.bottomLeft,
-        children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-                zoom: 11.0,
-                maxZoom: 19.0,
-                center: LatLng(20.2332, 23.432) //_marker.point,
-                ),
-          ),
-
-          // /********************************************** */
-          SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.zero,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height / 2.1,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 6, 42, 70),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Container(
-                          child: Column(
-                            children: [
-                              Container(
-                                  alignment: Alignment.topLeft,
-                                  margin: EdgeInsets.only(right: 5),
-                                  // width: 50,
-                                  // height: 50,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 40,
-                                        backgroundColor:
-                                            Color.fromARGB(255, 27, 79, 158),
-                                        backgroundImage: image !=
-                                                null // add null check operator
-                                            ? FileImage(
-                                                image!) // add non-null assertion operator
-                                            : null,
-                                      ),
-                                      Text(
-                                        "Mostafa Malik",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.bold),
-                                      )
-                                    ],
-                                  )),
-                              Container(
-                                  child: Column(
-                                children: [
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          "${widget.source}",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ]),
-                                  SizedBox(
-                                    child: Icon(Icons.arrow_downward),
-                                  ),
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          "${widget.distnation}",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ]),
-                                ],
-                              )),
-                              Container(
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        "علي بعد  ${widget.distance} متر",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                      Text("السعر المعروض: ${widget.price}",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold))
-                                    ]),
-                              ),
-                              Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 6, 42, 70),
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("01030968534",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      IconButton(
-                                        onPressed: _makePhoneCall,
-                                        icon: Icon(
-                                          Icons.phone,
-                                          color: Colors.green,
-                                        ),
-                                      )
-                                    ],
-                                  ))
-                            ],
-                          ),
-                          margin: EdgeInsets.all(5),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 3,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(40),
-                                topRight: Radius.circular(10),
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)),
-                            color: Color.fromARGB(255, 128, 154, 192),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(5),
-                          alignment: Alignment.center,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(6),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 10,
-                                )
-                              ]),
-                          child: const Text('Accept Order',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              )),
-                        ),
-                        // Row(
-                        //   children: [
-                        //     Icon(
-                        //       Icons.comment,
-                        //       color: Colors.grey,
-                        //     ),
-                        //     Container(
-                        //       // padding: EdgeInsets.all(),
-                        //       margin: EdgeInsets.symmetric(
-                        //           horizontal: 20, vertical: 10),
-                        //       width: MediaQuery.of(context).size.width - 80,
-                        //       height: 40,
-                        //       child: TextFormField(
-                        //         keyboardType: TextInputType.emailAddress,
-                        //         obscureText: false,
-                        //         decoration: InputDecoration(
-                        //             fillColor: Colors.white,
-                        //             hintText: 'Write comment or notation to Driver',
-                        //             border: UnderlineInputBorder(),
-                        //             contentPadding: const EdgeInsets.all(0),
-                        //             hintStyle: const TextStyle(
-                        //                 height: 1, color: Colors.grey)),
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                      ],
-                    ),
+      body: Visibility(
+        visible: show,
+        child: Center(
+            child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                  zoom: 11.0,
+                  maxZoom: 19.0,
+                  center: LatLng(20.2332, 23.432) //_marker.point,
                   ),
-                ],
+            ),
+
+            // /********************************************** */
+            SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.zero,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height / 2.1,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 6, 42, 70),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            SingleChildScrollView(
+                              child: Container(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.topLeft,
+                                          margin: EdgeInsets.only(right: 5),
+                                          // width: 50,
+                                          // height: 50,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              CircleAvatar(
+                                                  radius: 40,
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 27, 79, 158),
+                                                  backgroundImage: NetworkImage(
+                                                      '${request['image']}') // add non-null assertion operator
+
+                                                  ),
+                                              Text(
+                                                "${request['name']}",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 25,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          )),
+                                      Container(
+                                          child: Column(
+                                        children: [
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  "${request['source_location']}",
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ]),
+                                          SizedBox(
+                                            child: Icon(Icons.arrow_downward),
+                                          ),
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  "${request['destination_location']}",
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ]),
+                                        ],
+                                      )),
+                                      Container(
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Text(
+                                                "علي بعد  ${widget.distance} متر",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text("السعر المعروض: ",
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold))
+                                            ]),
+                                      ),
+                                      Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 6, 42, 70),
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text("01030968534",
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              IconButton(
+                                                onPressed: _makePhoneCall,
+                                                icon: Icon(
+                                                  Icons.phone,
+                                                  color: Colors.green,
+                                                ),
+                                              )
+                                            ],
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                                margin: EdgeInsets.all(5),
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height / 3,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(40),
+                                      topRight: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10)),
+                                  color: Color.fromARGB(255, 128, 154, 192),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(6),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 10,
+                                    )
+                                  ]),
+                              child: const Text('Accept Order',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  )),
+                            ),
+                            // Row(
+                            //   children: [
+                            //     Icon(
+                            //       Icons.comment,
+                            //       color: Colors.grey,
+                            //     ),
+                            //     Container(
+                            //       // padding: EdgeInsets.all(),
+                            //       margin: EdgeInsets.symmetric(
+                            //           horizontal: 20, vertical: 10),
+                            //       width: MediaQuery.of(context).size.width - 80,
+                            //       height: 40,
+                            //       child: TextFormField(
+                            //         keyboardType: TextInputType.emailAddress,
+                            //         obscureText: false,
+                            //         decoration: InputDecoration(
+                            //             fillColor: Colors.white,
+                            //             hintText: 'Write comment or notation to Driver',
+                            //             border: UnderlineInputBorder(),
+                            //             contentPadding: const EdgeInsets.all(0),
+                            //             hintStyle: const TextStyle(
+                            //                 height: 1, color: Colors.grey)),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      )),
+          ],
+        )),
+      ),
     );
   }
 }
