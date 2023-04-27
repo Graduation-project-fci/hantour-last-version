@@ -48,13 +48,14 @@ class _OrdersState extends State<Orders> {
               return GestureDetector(
                 onTap: () {
                   final x = TicketData(
-                      '${document['di']}',
+                      document.id,
                       'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80',
                       '${document['source_location']}',
                       '${document['destination_location']}',
                       '${document['price']}',
                       '10');
                   print(x.ImageLink);
+                  print(x._id);
                   print(x.source);
                   print(x.distnation);
                   print(x.distance);
@@ -62,7 +63,7 @@ class _OrdersState extends State<Orders> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => driverHome(id: ''))));
+                          builder: ((context) => driverHome(id: x._id))));
                 },
                 child: Center(
                   child: Container(
