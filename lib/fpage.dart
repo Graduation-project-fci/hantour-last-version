@@ -27,10 +27,10 @@ class fpage extends StatelessWidget {
 
     });
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 0, 0, 128),
+      backgroundColor: Color.fromARGB(255, 11, 7, 66),
       body: Center(
         child: Image(
-          image: AssetImage('assets/images/logo.png'),
+          image: AssetImage('assets/images/logo1.png'),
           height: 600,
         ),
       ),

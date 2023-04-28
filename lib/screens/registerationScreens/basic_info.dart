@@ -114,7 +114,10 @@ import 'package:hantourgo/firebase_Services/authentication.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../widgets.dart';
+
 class BasicInfo extends StatefulWidget {
+  BasicInfo({super.key});
   @override
   _BasicInfoState createState() => _BasicInfoState();
 
@@ -160,7 +163,7 @@ class _BasicInfoState extends State<BasicInfo> {
     return basicInfo
         .doc(_auth.currentUser!.uid)
         .set({
-        'ImageLink':downloadUrl,
+      'ImageLink':downloadUrl,
       'Phone':_dobController.text.trim(),
       'address':_addressController.text.trim()
     })
@@ -181,12 +184,12 @@ class _BasicInfoState extends State<BasicInfo> {
 
 
   final imagepicker = ImagePicker();
-String downloadUrl='';
+  String downloadUrl='';
 
 
   Future<void> uploadImage(String currentId,String folder) async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       image =File(pickedImage!.path);
     });
@@ -204,7 +207,7 @@ String downloadUrl='';
           ),
         );
       });
-       downloadUrl = await snapshot.ref.getDownloadURL();
+      downloadUrl = await snapshot.ref.getDownloadURL();
 
       // setState(() {
       //   image = File(pickedImage.path);
@@ -233,21 +236,26 @@ String downloadUrl='';
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController dateController = TextEditingController();
+    TextEditingController PhoneController = TextEditingController();
+    TextEditingController addressController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+    TextEditingController ConfpasswordController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registration Page'),
-        backgroundColor: const Color(0xFF000080),
+        backgroundColor: const Color(0xFF0B0742),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-           const SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             CircleAvatar(
-              radius: 50.0,
-              backgroundImage: image != null // add null check operator
-                  ? FileImage(image!) // add non-null assertion operator
-                  : null,
-
+              radius: 70.0,
+              backgroundColor: Colors.grey,
+              backgroundImage: AssetImage('assets/login.jpg'),
             ),
             SizedBox(height: 8.0),
             ElevatedButton(
@@ -279,56 +287,53 @@ String downloadUrl='';
               ),
             ),
 
-            TextField(
-              onChanged: (v){
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  widgets(controller: nameController, text: 'Full Name', obscure: false, textInputType: TextInputType.text, maxlen: 100,),
+                  SizedBox(height: 16.0),
+                  widgets(controller: dateController, text: 'Date of Birth (MM/DD/YYYY)', obscure: false, textInputType: TextInputType.phone, maxlen: 20,),
+                  SizedBox(height: 16.0),
+                  widgets(controller: PhoneController, text: 'Phone number', obscure: false, textInputType: TextInputType.phone, maxlen: 20,),
+                  SizedBox(height: 16.0),
+                  widgets(controller: addressController, text: 'Address', obscure: false, textInputType: TextInputType.streetAddress, maxlen: 100,),
+                  SizedBox(height: 16.0),
+                  widgets(controller: emailController, text: 'Email', obscure: false, textInputType: TextInputType.emailAddress, maxlen: 100,),
+                  SizedBox(height: 16.0),
+                  widgets(controller: passwordController, text: 'Password', obscure: true, textInputType: TextInputType.text, maxlen: 8,),
+                  SizedBox(height: 16.0),
+                  widgets(controller: ConfpasswordController, text: 'Confirm Password', obscure: true, textInputType: TextInputType.text, maxlen: 8,),
+                  SizedBox(height: 32.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      if(_dobController.text.trim() != "" && _addressController.text.trim() != "") {
+                        uploadBasicInfo();
 
-              }  ,
-              // onTap: ()async{ update image
-              //   print(_auth.currentUser!.uid) ;
-              //   print(await getFieldFromDocument('basicInfo',_auth.currentUser!.uid,'ImageLink') );
-              // }
 
-              controller: _dobController,
-              decoration: const InputDecoration(
-                labelText: 'Phone number',
-                border: OutlineInputBorder(),
+                      }
+
+                      Navigator.of(context).pushNamed('driverlicense');
+                    },
+                    child: Text(
+                      'Next',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF0B0742),
+                      textStyle: TextStyle(
+                        fontSize: 40.0,
+                      ),
+                    ),
+                  ),
+                ],
               ),
+
             ),
 
-
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _addressController,
-              decoration: InputDecoration(
-                labelText: 'Address',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 32.0),
-            ElevatedButton(
-              onPressed: () {
-                if(_dobController.text.trim() != "" && _addressController.text.trim() != "") {
-                  uploadBasicInfo();
-
-
-    }
-
-                Navigator.of(context).pushNamed('driverlicense');
-              },
-              child: Text(
-                'Next',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF000080),
-                textStyle: TextStyle(
-                  fontSize: 40.0,
-                ),
-              ),
-            ),
 
           ],
         ),

@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Orders(),
+      home: fpage(),
       routes: {
         'wallet': (context) => mywallet(),
         "login": (context) => loginpage(),

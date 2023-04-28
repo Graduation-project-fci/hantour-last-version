@@ -4,6 +4,7 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:hantourgo/homePage.dart';
+import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
 
 import '../button.dart';
 import '../customloginButton/costumloginbutton.dart';
@@ -96,7 +97,7 @@ class loginpage extends StatelessWidget {
       String user, String password, String screen, BuildContext context) async {
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: user,
         password: password,
       );
@@ -144,11 +145,11 @@ class loginpage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                const SizedBox(height: 40),
                 Container(
                   alignment: Alignment.center,
                   child: Image(
-                      image: AssetImage('assets/images/hantour.png'),
+                      image: AssetImage('assets/images/hantour1.png'),
                       height: 150),
                 ),
                 // const SizedBox(height: 0),
@@ -156,7 +157,7 @@ class loginpage extends StatelessWidget {
                 //   style: TextStyle(color: Colors.black,
                 //    fontSize: 16,
                 //    fontWeight: FontWeight.w500,),),
-                const SizedBox(height: 25),
+                const SizedBox(height: 40),
                 Form(
                   key: _formKey,
                   child: Container(
@@ -180,7 +181,7 @@ class loginpage extends StatelessWidget {
                           multiLine: false,
                         );
                         if (value!.isEmpty) {
-                          return 'Please enter some text';
+                          return 'Please enter email';
                         }
                         if (!regex.hasMatch(value.trim())) {
                           return 'Please Enter Valid Email address';
@@ -224,7 +225,7 @@ class loginpage extends StatelessWidget {
                         return null;
                       },
                       controller: passwordController,
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.text,
                       obscureText: false,
                       decoration: InputDecoration(
                           hintText: 'password',
@@ -249,8 +250,8 @@ class loginpage extends StatelessWidget {
                       try {
                         final credential = await FirebaseAuth.instance
                             .signInWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text);
+                            email: emailController.text,
+                            password: passwordController.text);
                         bool role = await isUserDriver();
                         if (role) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -290,7 +291,7 @@ class loginpage extends StatelessWidget {
                     alignment: Alignment.center,
                     height: 55,
                     decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 0, 0, 128),
+                        color: const Color.fromARGB(255, 11, 7, 66),
                         borderRadius: BorderRadius.circular(6),
                         boxShadow: [
                           BoxShadow(
@@ -307,9 +308,7 @@ class loginpage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 25),
-                button('Select User Type', 'select'),
-                const SizedBox(height: 40),
+                const SizedBox(height: 50),
                 socialLogin(),
               ],
             ),
@@ -331,7 +330,12 @@ class loginpage extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => selectPag()),
+                );
+              },
               child: const Text(
                 'Sign Up',
                 style: TextStyle(

@@ -24,7 +24,7 @@ class _RegistrationPageState extends State<driverLicense> {
   final imagepicker = ImagePicker();
   String downloadUrlfront='';
   String downloadUrlback='';
- String  downloadUrl="";
+  String  downloadUrl="";
 
   Future<void> uploadImage(String currentId,String folder) async {
     final pickedImage =
@@ -81,7 +81,7 @@ class _RegistrationPageState extends State<driverLicense> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registration Page'),
-        backgroundColor: Color(0xFF000080),
+        backgroundColor: Color(0xFF0B0742),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -101,7 +101,7 @@ class _RegistrationPageState extends State<driverLicense> {
                   border: Border.all(color: Colors.grey),
                 ),
                 child:
-                    imagefront != null ? Image.file(imagefront!) : null, // add null check
+                imagefront != null ? Image.file(imagefront!) : null, // add null check
               ),
               SizedBox(height: 16.0),
               Center(
@@ -214,7 +214,7 @@ class _RegistrationPageState extends State<driverLicense> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF000080),
+                    backgroundColor: Color(0xFF0B0742),
                     textStyle: TextStyle(
                       fontSize: 40.0,
                     ),

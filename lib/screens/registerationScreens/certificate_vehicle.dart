@@ -17,7 +17,7 @@ class _RegistrationPageState extends State<certificate_vehicle> {
 
   Future<void> uploadImagefront() async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage == null) {
       print("No Image chosen yet"); // replace Text with print
     } else {
@@ -31,7 +31,7 @@ class _RegistrationPageState extends State<certificate_vehicle> {
 
   Future<void> uploadImageback() async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage == null) {
       print("No Image chosen yet"); // replace Text with print
     } else {
@@ -46,7 +46,7 @@ class _RegistrationPageState extends State<certificate_vehicle> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registration Page'),
-        backgroundColor: Color(0xFF000080),
+        backgroundColor:Color(0xFF0B0742),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -156,7 +156,7 @@ class _RegistrationPageState extends State<certificate_vehicle> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF000080),
+                    backgroundColor: Color(0xFF0B0742),
                     textStyle: TextStyle(
                       fontSize: 40.0,
                     ),

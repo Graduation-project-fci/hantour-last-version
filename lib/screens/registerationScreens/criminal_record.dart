@@ -69,12 +69,12 @@ class _RegistrationPageState extends State<criminal_record> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registration Page'),
-        backgroundColor: Color(0xFF000080),
+        backgroundColor: Color(0xFF0B0742),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding:
-              const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
+          const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -116,9 +116,7 @@ class _RegistrationPageState extends State<criminal_record> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
-              ),
+              SizedBox(height: 32.0),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -140,7 +138,7 @@ class _RegistrationPageState extends State<criminal_record> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF000080),
+                    backgroundColor: Color(0xFF0B0742),
                     textStyle: TextStyle(
                       fontSize: 40.0,
                     ),

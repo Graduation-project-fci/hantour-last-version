@@ -86,7 +86,7 @@ class _RegistrationPageState extends State<nationalID> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registration Page'),
-        backgroundColor: Color(0xFF000080),
+        backgroundColor: Color(0xFF0B0742),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -108,15 +108,15 @@ class _RegistrationPageState extends State<nationalID> {
                 child: imagefront != null
                     ? Image.file(imagefront!)
                     : Center(
-                        child: Text('No image selected'),
-                      ),
+                  child: Text('No image selected'),
+                ),
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
                   onPressed: ()async{
-                   await uploadImage(_auth.currentUser!.uid, 'NationalId/front' ,downloadUrlfront);
-                   print('front ${downloadUrlfront} \n back: ${downloadUrlback}');
+                    await uploadImage(_auth.currentUser!.uid, 'NationalId/front' ,downloadUrlfront);
+                    print('front ${downloadUrlfront} \n back: ${downloadUrlback}');
 
                   },
                   child: Text(
@@ -154,14 +154,14 @@ class _RegistrationPageState extends State<nationalID> {
                 child: imageback != null
                     ? Image.file(imageback!)
                     : Center(
-                        child: Text('No image selected'),
-                      ),
+                  child: Text('No image selected'),
+                ),
               ),
               SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
                   onPressed: ()async{
-                   await uploadImage(_auth.currentUser!.uid, 'NationalId/back' ,downloadUrlback);
+                    await uploadImage(_auth.currentUser!.uid, 'NationalId/back' ,downloadUrlback);
 
                   },
                   child: Text(
@@ -225,7 +225,7 @@ class _RegistrationPageState extends State<nationalID> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF000080),
+                    backgroundColor: Color(0xFF0B0742),
                     textStyle: TextStyle(
                       fontSize: 40.0,
                     ),
