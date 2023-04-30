@@ -13,8 +13,15 @@ class TicketData {
   late String distance = '';
   late String price = '';
   String phone_number = '';
-  TicketData(String _id, this.ImageLink, String source, String distnation,
-      String distance, String price ,String phone_number,) {
+  TicketData(
+    String _id,
+    this.ImageLink,
+    String source,
+    String distnation,
+    String distance,
+    String price,
+    String phone_number,
+  ) {
     this._id = _id;
     this.source = source;
     this.distnation = distnation;
@@ -37,10 +44,11 @@ class _OrdersState extends State<Orders> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        
         body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('Requests') .where('status', isEqualTo: 'pending')
-      .snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('Requests')
+              .where('status', isEqualTo: 'pending')
+              .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
@@ -59,7 +67,8 @@ class _OrdersState extends State<Orders> {
                         '${document['source_location']}',
                         '${document['destination_location']}',
                         '${document['price']}',
-                        '10','${document['phone_number']}');
+                        '10',
+                        '${document['phone_number']}');
                     print(x.ImageLink);
                     print(x._id);
                     print(x.source);
@@ -78,7 +87,7 @@ class _OrdersState extends State<Orders> {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(
+                              const CircleAvatar(
                                 radius: 30,
                                 backgroundColor: Colors.white,
                                 child: ClipOval(
@@ -119,7 +128,7 @@ class _OrdersState extends State<Orders> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 50,
                                     width: 50,
                                     child: Icon(
@@ -154,7 +163,7 @@ class _OrdersState extends State<Orders> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text(
+                                const Text(
                                   "Distance :  meter",
                                   style: TextStyle(
                                       fontSize: 20,
