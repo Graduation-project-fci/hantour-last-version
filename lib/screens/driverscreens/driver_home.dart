@@ -26,13 +26,22 @@ class driverHome extends StatefulWidget {
 
   driverHome({Key? key, required this.id}) : super(key: key);
   @override
-  State<driverHome> createState() => _HomePage2State();
+  State<driverHome> createState() => _HomePageDriverState();
 }
 
-class _HomePage2State extends State<driverHome> {
-  late Marker _marker;
-  bool show = true;
+class _HomePageDriverState extends State<driverHome> {
+  bool show = false;
   Map<String, dynamic> request = {};
+  late Marker _marker_ = Marker(
+    point: LatLng(0, 0),
+    width: 50,
+    height: 50,
+    builder: (context) => Icon(
+      Icons.location_on,
+      size: 50,
+      color: Colors.red,
+    ),
+  );
 
   Future<Map<String, dynamic>?> readRequest(String requestId) async {
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
@@ -43,12 +52,12 @@ class _HomePage2State extends State<driverHome> {
     return snapshot.data();
   }
 
-  @override
-  Future<void> setState(VoidCallback fn) async {
-    // TODO: implement setState
-    super.setState(fn);
-    show = (widget.id == '') ? false : true;
-  }
+  // @override
+  // Future<void> setState(VoidCallback fn) async {
+  //   // TODO: implement setState
+  //   super.setState(fn);
+  //   show = (widget.id == '') ? false : true;
+  // }
 
   final MapController _mapController = MapController();
   CollectionReference requests =
@@ -153,14 +162,18 @@ class _HomePage2State extends State<driverHome> {
         point: LatLng(position.latitude, position.longitude),
         width: 50,
         height: 50,
-        builder: (context) => FlutterLogo(),
+        builder: (context) => Icon(
+          Icons.location_on,
+          size: 50,
+          color: Colors.red,
+        ),
       );
       // update the state of your widget tree with the new marker object
       setState(() {
-        _marker = updatedMarker;
+        _marker_ = updatedMarker;
 
         (_searchController_source.text == "")
-            ? _mapController.move(_marker.point, 15.0)
+            ? _mapController.move(_marker_.point, 15.0)
             : null;
       });
     } catch (e) {
@@ -198,6 +211,38 @@ class _HomePage2State extends State<driverHome> {
     }
   }
 
+  final MapController _mapController_ = MapController();
+  Future<void> _updateMarkerPositionDriver() async {
+    try {
+      // retrieve the user's current location using geolocator
+      Position position = await Geolocator.getCurrentPosition();
+      // create a new marker object with the updated position
+      Marker updatedMarker = Marker(
+        point: LatLng(position.latitude, position.longitude),
+        width: 50,
+        height: 50,
+        builder: (context) => Icon(
+          Icons.location_on,
+          size: 50,
+          color: Colors.red,
+        ),
+      );
+      // update the state of your widget tree with the new marker object
+      setState(() {
+        _marker_ = updatedMarker;
+
+        (_searchController_source.text == "")
+            ? _mapController_.move(_marker_.point, 15.0)
+            : null;
+      });
+      print(updatedMarker.point);
+    } catch (e) {
+      print('Error retrieving location: $e');
+    }
+    // call this function again after 5 seconds
+    Future.delayed(Duration(seconds: 5), () => _updateMarkerPosition());
+  }
+
   void dispose() {
     // Perform any necessary cleanup here
     super.dispose();
@@ -207,6 +252,7 @@ class _HomePage2State extends State<driverHome> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // ignore: unnecessary_null_comparison
     if (widget.id == '') {
       setState(() {
         show = false;
@@ -220,7 +266,7 @@ class _HomePage2State extends State<driverHome> {
     fetchData();
     print(Email);
 
-    _marker = Marker(
+    _marker_ = Marker(
       point: center,
       width: 50,
       height: 50,
@@ -228,7 +274,7 @@ class _HomePage2State extends State<driverHome> {
     );
     source_coordinates = LatLng(0, 0);
     destination_coordinates = LatLng(0, 0);
-    _updateMarkerPosition();
+    _updateMarkerPositionDriver();
   }
 
   void _handleTap(LatLng latLng) async {
@@ -247,7 +293,7 @@ class _HomePage2State extends State<driverHome> {
       print(placeName);
 
       setState(() {
-        _marker = Marker(
+        _marker_ = Marker(
           width: 80.0,
           height: 80.0,
           point: LatLng(latitude, longitude),
@@ -265,21 +311,6 @@ class _HomePage2State extends State<driverHome> {
   }
 
   String Distance = '';
-  void handleMarkers() {
-    while (_markers.length > 2) {
-      _markers.removeAt(0);
-      Distance = calculateDistance(
-          _markers.first.point.latitude,
-          _markers.first.point.longitude,
-          _markers.last.point.latitude,
-          _markers.last.point.longitude);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Distance is ${Distance} '),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -408,6 +439,7 @@ class _HomePage2State extends State<driverHome> {
                 onTap: () {
                   print('logout');
                   FirebaseAuth.instance.signOut();
+                  Navigator.pushNamed(context, 'SplashScreen');
                 },
                 child: Container(
                   margin: const EdgeInsets.all(10),
@@ -436,13 +468,20 @@ class _HomePage2State extends State<driverHome> {
           alignment: Alignment.bottomLeft,
           children: [
             FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                  zoom: 11.0,
-                  maxZoom: 19.0,
-                  center: LatLng(20.2332, 23.432) //_marker.point,
+                mapController: _mapController_,
+                options: MapOptions(
+                    zoom: 11.0,
+                    maxZoom: 19.0,
+                    center: LatLng(20.2332, 23.432) //_marker.point,
+                    ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.example.app',
                   ),
-            ),
+                  MarkerLayer(markers: [_marker_])
+                ]),
 
             // /********************************************** */
             Visibility(

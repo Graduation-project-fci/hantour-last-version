@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'homepage2.dart';
 
 class socialLogin extends StatelessWidget {
    socialLogin({Key? key}) : super(key: key);
@@ -23,6 +26,25 @@ class socialLogin extends StatelessWidget {
      // Sign in with the credential
      return await _auth.signInWithCredential(credential);
    }
+     Future<bool> isUserDriver() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return false;
+    }
+
+    final driverQuerySnapshot = await FirebaseFirestore.instance
+        .collection('Drivers')
+        .doc(user.uid)
+        .get();
+
+    final passengerQuerySnapshot = await FirebaseFirestore.instance
+        .collection('Riders')
+        .where('passenger_id', isEqualTo: user.uid)
+        .limit(1)
+        .get();
+
+    return driverQuerySnapshot.exists;
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -56,7 +78,22 @@ class socialLogin extends StatelessWidget {
                     try{
                       final userCredential = await signInWithGoogle();
                       print('Signed in as ${userCredential.user!.displayName}');
-                      Navigator.pushNamed(context, 'Home') ;
+                      bool role = await isUserDriver();
+                        if (role) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Your are driver.'),
+                            ),
+                          );
+                          Navigator.pushNamed(context, 'Driverhome');
+                        } else {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => HomePage2(),
+                            ),
+                          );
+                        }
 
                     }catch(e){
                       ScaffoldMessenger.of(context).showSnackBar(

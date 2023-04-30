@@ -26,7 +26,12 @@ class HomePage2 extends StatefulWidget {
 }
 
 class _HomePage2State extends State<HomePage2> {
-  late Marker _marker;
+late Marker _marker = Marker(
+    point: LatLng(0, 0),
+    width: 50,
+    height: 50,
+    builder: (context) => FlutterLogo(),
+  );
 
   final MapController _mapController = MapController();
   CollectionReference requests =
