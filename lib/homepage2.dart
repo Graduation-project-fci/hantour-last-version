@@ -26,7 +26,7 @@ class HomePage2 extends StatefulWidget {
 }
 
 class _HomePage2State extends State<HomePage2> {
-late Marker _marker = Marker(
+  late Marker _marker = Marker(
     point: LatLng(0, 0),
     width: 50,
     height: 50,
@@ -55,7 +55,9 @@ late Marker _marker = Marker(
       'source_location': _searchController_source.text.trim(),
       'destination_location': _searchCont_destination.text.trim(),
       'price': _offer_controller.text.trim(),
-      'image': PersonalImageLink
+      'image': PersonalImageLink,
+      'phone_number':Phone_number,
+      'name':Name
     };
 
     await collectionRef.add(data);
@@ -73,14 +75,16 @@ late Marker _marker = Marker(
   String Email = '';
   String PersonalImageLink = '';
   String Name = '';
+  String Phone_number = '';
   Future<void> fetchData() async {
     final userData = await getUserData();
     final data = userData.data();
     setState(() {
       if (data != null) {
         Email = data['email'] ?? '';
-        PersonalImageLink = data['personal_photo'] ?? '';
-        Name = data['name'] ?? '';
+        PersonalImageLink = data['personal_photo'] ?? 'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png';
+        Name = data['name'] ?? 'Unknown';
+        Phone_number = data['phone'] ?? '';
         print('Name: $Name');
       }
     });

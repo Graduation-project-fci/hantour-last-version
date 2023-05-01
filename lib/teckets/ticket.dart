@@ -31,6 +31,8 @@ class TicketData {
   }
 }
 
+late TicketData x = TicketData('', '', '', '', '', '', '');
+
 class Orders extends StatefulWidget {
   const Orders({super.key});
 
@@ -61,9 +63,9 @@ class _OrdersState extends State<Orders> {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 return GestureDetector(
                   onTap: () {
-                    final x = TicketData(
+                    x = TicketData(
                         document.id,
-                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80',
+                        '${document['image']}',
                         '${document['source_location']}',
                         '${document['destination_location']}',
                         '${document['price']}',
@@ -87,14 +89,12 @@ class _OrdersState extends State<Orders> {
                         children: [
                           Row(
                             children: [
-                              const CircleAvatar(
+                              CircleAvatar(
                                 radius: 30,
                                 backgroundColor: Colors.white,
                                 child: ClipOval(
                                   child: Image(
-                                    // image: NetworkImage('${document['image']}'),
-                                    image: NetworkImage(
-                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
+                                    image: NetworkImage('${document['image']}'),
                                     fit: BoxFit.cover, // Add this line
                                     width:
                                         60, // Add this line to specify the width of the image

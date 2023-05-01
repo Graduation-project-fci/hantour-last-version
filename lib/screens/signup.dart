@@ -15,7 +15,7 @@ class signupscreen extends StatelessWidget {
   Future<void> addRider(String name,String phone,String email ) {
     // Call the user's CollectionReference to add a new user
     return Riders.doc(auth.currentUser!.uid).set({
-      'name':name,'phone':phone,'email':email
+      'name':name,'phone':phone,'email':email,'personal_photo':'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png'
     })
 
         .then((value) => print("User Added"))
