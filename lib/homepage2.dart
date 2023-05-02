@@ -51,13 +51,13 @@ class _HomePage2State extends State<HomePage2> {
       'source_coordinates': sourceGeoPoint.data,
       'destination_coordinates': destinationGeoPoint.data,
       'payment_method': 'cash',
-      'status': 'Pending',
+      'status': 'pending',
       'source_location': _searchController_source.text.trim(),
       'destination_location': _searchCont_destination.text.trim(),
       'price': _offer_controller.text.trim(),
       'image': PersonalImageLink,
-      'phone_number':Phone_number,
-      'name':Name
+      'phone_number': Phone_number,
+      'name': Name
     };
 
     await collectionRef.add(data);
@@ -82,7 +82,8 @@ class _HomePage2State extends State<HomePage2> {
     setState(() {
       if (data != null) {
         Email = data['email'] ?? '';
-        PersonalImageLink = data['personal_photo'] ?? 'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png';
+        PersonalImageLink = data['personal_photo'] ??
+            'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png';
         Name = data['name'] ?? 'Unknown';
         Phone_number = data['phone'] ?? '';
         print('Name: $Name');
@@ -214,21 +215,26 @@ class _HomePage2State extends State<HomePage2> {
   }
 
   String Distance = '';
-  void handleMarkers() {
-    while (_markers.length > 2) {
-      _markers.removeAt(0);
-      Distance = calculateDistance(
-          _markers.first.point.latitude,
-          _markers.first.point.longitude,
-          _markers.last.point.latitude,
-          _markers.last.point.longitude);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Distance is ${Distance} '),
-        ),
-      );
-    }
+void handleMarkers() {
+  if (_markers.length < 2) {
+    return;
   }
+
+  _markers.removeAt(0);
+  String distance = calculateDistance(
+    _markers.first.point.latitude,
+    _markers.first.point.longitude,
+    _markers.last.point.latitude,
+    _markers.last.point.longitude,
+  );
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Distance is ${distance}'),
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -379,7 +385,40 @@ class _HomePage2State extends State<HomePage2> {
             options: MapOptions(
               zoom: 15.0,
               maxZoom: 19.0,
-              center: _marker.point,
+              center: LatLng(25.696838842882965, 32.644554335467014),
+              onTap: (tapPosition, latLng) {
+                setState(() {
+                  _markers.add(
+                    Marker(
+                      point: latLng,
+                      width: 50,
+                      height: 50,
+                      builder: (context) => Icon(
+                        Icons.location_on,
+                        size: 50,
+                        color: Colors.red,
+                      ),
+                    ),
+                  );
+                  handleMarkers();
+                  if (_markers.length >= 2) {
+                    source_coordinates = _markers.first.point;
+                    destination_coordinates = _markers.last.point;
+                    getAddressFromLatLng(
+                      source_coordinates.latitude,
+                      source_coordinates.longitude,
+                    ).then((source) {
+                      _searchController_source.text = source;
+                    });
+                    getAddressFromLatLng(
+                      destination_coordinates.latitude,
+                      destination_coordinates.longitude,
+                    ).then((destination) {
+                      _searchCont_destination.text = destination;
+                    });
+                  }
+                });
+              },
             ),
             children: [
               TileLayer(
@@ -388,16 +427,15 @@ class _HomePage2State extends State<HomePage2> {
               ),
               PolylineLayer(
                 polylineCulling: false,
-                polylines: [
-                  (source_coordinates != null &&
-                          destination_coordinates != null)
-                      ? Polyline(
+                polylines: _markers.length >= 2
+                    ? [
+                        Polyline(
                           points: [source_coordinates, destination_coordinates],
                           color: Colors.green,
                           strokeWidth: 4.0,
                         )
-                      : null!
-                ],
+                      ]
+                    : [],
               ),
               MarkerLayer(
                 markers: _markers,
@@ -466,6 +504,7 @@ class _HomePage2State extends State<HomePage2> {
                                     cursorColor: Colors.white,
                                     controller: _searchController_source,
                                     decoration: const InputDecoration(
+                                      fillColor: Colors.red,
                                       focusColor: Colors.red,
                                       hintText:
                                           'Search for a place or Select from Map',
@@ -503,8 +542,7 @@ class _HomePage2State extends State<HomePage2> {
                                   itemBuilder: (context, suggestion) {
                                     return ListTile(
                                       textColor: Colors.white,
-                                      tileColor:
-                                          const Color.fromARGB(255, 6, 42, 70),
+                                      tileColor: Color.fromARGB(255, 6, 42, 70),
                                       title: Text(suggestion),
                                     );
                                   },
@@ -523,8 +561,6 @@ class _HomePage2State extends State<HomePage2> {
                                         'Selected place: $suggestion ($lat, $lng)');
                                     setState(() {
                                       source_coordinates = LatLng(lat, lng);
-                                      center = source_coordinates;
-                                      _mapController.move(center, 15);
                                     });
                                   },
                                 ),
@@ -606,15 +642,23 @@ class _HomePage2State extends State<HomePage2> {
                                       List<dynamic> data =
                                           json.decode(response.body);
 
-                                      double lat = double.parse(data[0]['lat']);
-                                      double lng = double.parse(data[0]['lon']);
-                                      _searchCont_destination.text = suggestion;
-                                      print(
-                                          'Selected place: $suggestion ($lat, $lng)');
-                                      setState(() {
-                                        destination_coordinates =
-                                            LatLng(lat, lng);
-                                      });
+                                      if (data.isNotEmpty) {
+                                        double lat =
+                                            double.parse(data[0]['lat']);
+                                        double lng =
+                                            double.parse(data[0]['lon']);
+                                        _searchCont_destination.text =
+                                            suggestion;
+                                        print(
+                                            'Selected place: $suggestion ($lat, $lng)');
+                                        setState(() {
+                                          destination_coordinates =
+                                              LatLng(lat, lng);
+                                        });
+                                      } else {
+                                        print(
+                                            'No results found for suggestion: $suggestion');
+                                      }
                                     },
                                   ),
                                 ),
