@@ -215,26 +215,25 @@ class _HomePage2State extends State<HomePage2> {
   }
 
   String Distance = '';
-void handleMarkers() {
-  if (_markers.length < 2) {
-    return;
+  void handleMarkers() {
+    if (_markers.length < 2) {
+      return;
+    }
+
+    _markers.removeAt(0);
+    String distance = calculateDistance(
+      _markers.first.point.latitude,
+      _markers.first.point.longitude,
+      _markers.last.point.latitude,
+      _markers.last.point.longitude,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Distance is ${distance}'),
+      ),
+    );
   }
-
-  _markers.removeAt(0);
-  String distance = calculateDistance(
-    _markers.first.point.latitude,
-    _markers.first.point.longitude,
-    _markers.last.point.latitude,
-    _markers.last.point.longitude,
-  );
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text('Distance is ${distance}'),
-    ),
-  );
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -292,29 +291,6 @@ void handleMarkers() {
                   ],
                 )
               ],
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.car_crash,
-                    color: Colors.blue,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, 'Orders');
-                    },
-                    child: Text(
-                      'Orders',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
-              ),
             ),
             Container(
               margin: const EdgeInsets.all(10),

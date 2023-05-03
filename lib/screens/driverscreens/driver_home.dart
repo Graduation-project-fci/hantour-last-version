@@ -143,7 +143,7 @@ class _HomePageDriverState extends State<driverHome> {
     }
   }
 
-  void _makePhoneCall({String phone = '01030968534'}) async {
+  void _makePhoneCall(String phone) async {
     final phoneNumber = 'tel:+2$phone';
     if (await canLaunch(phoneNumber)) {
       await launch(phoneNumber);
@@ -472,7 +472,7 @@ class _HomePageDriverState extends State<driverHome> {
                 options: MapOptions(
                     zoom: 11.0,
                     maxZoom: 19.0,
-                    center: LatLng(20.2332, 23.432) //_marker.point,
+                    center: LatLng(25.6872, 32.6396) //_marker.point,
                     ),
                 children: [
                   TileLayer(
@@ -526,7 +526,10 @@ class _HomePageDriverState extends State<driverHome> {
                                                       Color.fromARGB(
                                                           255, 27, 79, 158),
                                                   backgroundImage: NetworkImage(
-                                                      '${request['image']}!'),
+                                                      '${request['image']}!' !=
+                                                              null
+                                                          ? '${request['image']}'
+                                                          : 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
                                                 ),
                                                 Text(
                                                   "${request['name']}",
@@ -587,7 +590,8 @@ class _HomePageDriverState extends State<driverHome> {
                                                 SizedBox(
                                                   height: 10,
                                                 ),
-                                                Text("السعر المعروض: ",
+                                                Text(
+                                                    "السعر المعروض: ${request['price']}",
                                                     style: TextStyle(
                                                         fontSize: 15,
                                                         fontWeight:
@@ -614,7 +618,12 @@ class _HomePageDriverState extends State<driverHome> {
                                                         fontWeight:
                                                             FontWeight.bold)),
                                                 IconButton(
-                                                  onPressed: _makePhoneCall,
+                                                  onPressed: () {
+                                                    print(request[
+                                                        'phone_number']);
+                                                    _makePhoneCall(request[
+                                                        'phone_number']);
+                                                  },
                                                   icon: Icon(
                                                     Icons.phone,
                                                     color: Colors.green,
