@@ -4,10 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-
 import 'package:hantourgo/constants/constantsize.dart';
 import 'package:hantourgo/profile_pages/user_profile.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,6 +24,7 @@ class HomePage2 extends StatefulWidget {
 }
 
 class _HomePage2State extends State<HomePage2> {
+  int clicktab = 1;
   late Marker _marker = Marker(
     point: LatLng(0, 0),
     width: 50,
@@ -61,6 +60,16 @@ class _HomePage2State extends State<HomePage2> {
     };
 
     await collectionRef.add(data);
+  }
+
+  late Position _currentPosition;
+  MapController mapPosition = MapController();
+  void _getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition();
+    setState(() {
+      _currentPosition = position;
+      _mapController.move(LatLng(position.latitude, position.longitude), 13.0);
+    });
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
