@@ -68,7 +68,7 @@ class _HomePage2State extends State<HomePage2> {
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
       _currentPosition = position;
-      _mapController.move(LatLng(position.latitude, position.longitude), 13.0);
+      _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
     });
   }
 
@@ -147,12 +147,10 @@ class _HomePage2State extends State<HomePage2> {
     } catch (e) {
       print('Error retrieving location: $e');
     }
-    // call this function again after 5 seconds
-    Future.delayed(Duration(seconds: 5), () => _updateMarkerPosition());
   }
 
   var CurrentLocation = LatLng(0, 0);
-  List<Marker> _markers = [];
+  List<Marker> markers = [];
 
   final _searchController_source = TextEditingController();
   final _searchCont_destination = TextEditingController();
@@ -216,7 +214,6 @@ class _HomePage2State extends State<HomePage2> {
             color: Colors.red,
           ),
         );
-        _mapController.move(LatLng(latitude, longitude), 15.0);
       });
     } else {
       print('Error reverse geocoding: ${response.statusCode}');
@@ -225,16 +222,15 @@ class _HomePage2State extends State<HomePage2> {
 
   String Distance = '';
   void handleMarkers() {
-    if (_markers.length < 2) {
-      return;
+    while (markers.length > 2) {
+      markers.removeAt(0);
     }
 
-    _markers.removeAt(0);
     String distance = calculateDistance(
-      _markers.first.point.latitude,
-      _markers.first.point.longitude,
-      _markers.last.point.latitude,
-      _markers.last.point.longitude,
+      markers.first.point.latitude,
+      markers.first.point.longitude,
+      markers.last.point.latitude,
+      markers.last.point.longitude,
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -370,10 +366,10 @@ class _HomePage2State extends State<HomePage2> {
             options: MapOptions(
               zoom: 15.0,
               maxZoom: 19.0,
-              center: LatLng(25.696838842882965, 32.644554335467014),
+              center: _marker.point,
               onTap: (tapPosition, latLng) {
                 setState(() {
-                  _markers.add(
+                  markers.add(
                     Marker(
                       point: latLng,
                       width: 50,
@@ -386,9 +382,10 @@ class _HomePage2State extends State<HomePage2> {
                     ),
                   );
                   handleMarkers();
-                  if (_markers.length >= 2) {
-                    source_coordinates = _markers.first.point;
-                    destination_coordinates = _markers.last.point;
+
+                  if (markers.length >= 2) {
+                    source_coordinates = markers.first.point;
+                    destination_coordinates = markers.last.point;
                     getAddressFromLatLng(
                       source_coordinates.latitude,
                       source_coordinates.longitude,
@@ -412,7 +409,7 @@ class _HomePage2State extends State<HomePage2> {
               ),
               PolylineLayer(
                 polylineCulling: false,
-                polylines: _markers.length >= 2
+                polylines: markers.length >= 2
                     ? [
                         Polyline(
                           points: [source_coordinates, destination_coordinates],
@@ -423,7 +420,7 @@ class _HomePage2State extends State<HomePage2> {
                     : [],
               ),
               MarkerLayer(
-                markers: _markers,
+                markers: markers,
               )
             ],
           ),
@@ -461,14 +458,16 @@ class _HomePage2State extends State<HomePage2> {
                                 width: 90,
                               ),
                             ),
-                            Container(
-                              margin: EdgeInsets.all(9),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)),
-                              width: 90,
-                              height: 70,
-                              child: Image.asset('assets/images/gps.png'),
+                            GestureDetector(
+                              onTap: _getCurrentLocation,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                width: 90,
+                                height: 70,
+                                child: Image.asset('assets/images/gps.png'),
+                              ),
                             ),
                           ],
                         ),
@@ -517,6 +516,7 @@ class _HomePage2State extends State<HomePage2> {
                                         'https://nominatim.openstreetmap.org/search?q=$pattern&format=json&limit=20';
                                     http.Response response =
                                         await http.get(Uri.parse(url));
+                                    if (response.statusCode == 200) {}
                                     List<dynamic> data =
                                         json.decode(response.body);
 
@@ -546,6 +546,20 @@ class _HomePage2State extends State<HomePage2> {
                                         'Selected place: $suggestion ($lat, $lng)');
                                     setState(() {
                                       source_coordinates = LatLng(lat, lng);
+                                      markers.add(
+                                        Marker(
+                                          point: source_coordinates,
+                                          width: 50,
+                                          height: 50,
+                                          builder: (context) => Icon(
+                                            Icons.location_on,
+                                            size: 50,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      );
+
+                                      handleMarkers();
                                     });
                                   },
                                 ),
@@ -639,6 +653,21 @@ class _HomePage2State extends State<HomePage2> {
                                         setState(() {
                                           destination_coordinates =
                                               LatLng(lat, lng);
+                                          markers.add(
+                                            Marker(
+                                              point: destination_coordinates,
+                                              width: 50,
+                                              height: 50,
+                                              builder: (context) => Icon(
+                                                Icons.location_on,
+                                                size: 50,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          );
+                                          if (markers.length > 2) {
+                                            markers.removeAt(1);
+                                          }
                                         });
                                       } else {
                                         print(
@@ -738,6 +767,10 @@ class _HomePage2State extends State<HomePage2> {
                               _searchCont_destination.text = '';
                               _searchController_source.text = '';
                               _offer_controller.text = '';
+                              markers.removeRange(0, markers.length);
+                              setState(() {
+                                markers = [];
+                              });
                             },
                             child: Container(
                               alignment: Alignment.center,
