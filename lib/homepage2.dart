@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/ui/firebase_sorted_list.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:hantourgo/firebase_Services/authentication.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +46,13 @@ class _HomePage2State extends State<HomePage2> {
     final destinationGeoPoint = geo.point(
         latitude: destinationLocation.latitude,
         longitude: destinationLocation.longitude);
+    final userData = await getUserData();
+    PersonalImageLink = userData.data()?['personal_image'] ??
+        'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png';
+    Phone_number = userData.data()?['phone'] ?? '';
+// ...
+
+// Download the image from Firebase Storage
 
     final data = {
       'rider_id': FirebaseAuth.instance.currentUser!.uid,
@@ -82,8 +91,9 @@ class _HomePage2State extends State<HomePage2> {
   }
 
   String Email = '';
-  String PersonalImageLink = '';
-  String Name = '';
+  String PersonalImageLink =
+      'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png';
+  String Name = 'UnKnown';
   String Phone_number = '';
   Future<void> fetchData() async {
     final userData = await getUserData();
@@ -91,10 +101,20 @@ class _HomePage2State extends State<HomePage2> {
     setState(() {
       if (data != null) {
         Email = data['email'] ?? '';
+        print(Email);
         PersonalImageLink = data['personal_photo'] ??
             'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png';
-        Name = data['name'] ?? 'Unknown';
-        Phone_number = data['phone'] ?? '';
+        if (data['name'] != '') {
+          Name = data['name'];
+        } else {
+          Name = "Unknown";
+        }
+        if (data['phone'] != '') {
+          Phone_number = data['phone'];
+        } else {
+          Phone_number = "";
+        }
+
         print('Name: $Name');
       }
     });
@@ -719,32 +739,6 @@ class _HomePage2State extends State<HomePage2> {
                             ),
                           ],
                         ),
-                        // Row(
-                        //   children: [
-                        //     Icon(
-                        //       Icons.comment,
-                        //       color: Colors.grey,
-                        //     ),
-                        //     Container(
-                        //       // padding: EdgeInsets.all(),
-                        //       margin: EdgeInsets.symmetric(
-                        //           horizontal: 20, vertical: 10),
-                        //       width: MediaQuery.of(context).size.width - 80,
-                        //       height: 40,
-                        //       child: TextFormField(
-                        //         keyboardType: TextInputType.emailAddress,
-                        //         obscureText: false,
-                        //         decoration: InputDecoration(
-                        //             fillColor: Colors.white,
-                        //             hintText: 'Write comment or notation to Driver',
-                        //             border: UnderlineInputBorder(),
-                        //             contentPadding: const EdgeInsets.all(0),
-                        //             hintStyle: const TextStyle(
-                        //                 height: 1, color: Colors.grey)),
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
                         Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
@@ -759,11 +753,7 @@ class _HomePage2State extends State<HomePage2> {
                                     GeoPoint(destination_coordinates.latitude,
                                         destination_coordinates.longitude));
                               }
-                              addPassengerRequest(
-                                  GeoPoint(source_coordinates.latitude,
-                                      source_coordinates.longitude),
-                                  GeoPoint(destination_coordinates.latitude,
-                                      destination_coordinates.longitude));
+
                               _searchCont_destination.text = '';
                               _searchController_source.text = '';
                               _offer_controller.text = '';

@@ -93,13 +93,13 @@ class _OrdersState extends State<Orders> {
                                 radius: 30,
                                 backgroundColor: Colors.white,
                                 child: ClipOval(
-                                  child: Image(
+                                  child: FadeInImage(
+                                    placeholder:
+                                        AssetImage('assets/images/1.jpg'),
                                     image: NetworkImage('${document['image']}'),
-                                    fit: BoxFit.cover, // Add this line
-                                    width:
-                                        60, // Add this line to specify the width of the image
-                                    height:
-                                        60, // Add this line to specify the height of the image
+                                    fit: BoxFit.cover,
+                                    width: 60,
+                                    height: 60,
                                   ),
                                 ),
                               ),

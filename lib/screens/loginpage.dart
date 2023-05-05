@@ -250,11 +250,7 @@ class loginpage extends StatelessWidget {
                             password: passwordController.text);
                         bool role = await isUserDriver();
                         if (role) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Your are driver.'),
-                            ),
-                          );
+                        
                           Navigator.pushNamed(context, 'Driverhome');
                         } else {
                           Navigator.pushReplacement(

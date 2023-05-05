@@ -80,7 +80,7 @@ class _HomePageDriverState extends State<driverHome> {
       'source_coordinates': sourceGeoPoint.data,
       'destination_coordinates': destinationGeoPoint.data,
       'payment_method': 'cash',
-      'status': 'Pending',
+      'status': 'pending',
       'source_location': _searchController_source.text.trim(),
       'destination_location': _searchCont_destination.text.trim(),
       'price': _offer_controller.text.trim(),
@@ -151,7 +151,7 @@ class _HomePageDriverState extends State<driverHome> {
       throw 'Could not launch $phoneNumber';
     }
   }
-
+  List<Marker> markers = [];
   TextEditingController _offer_controller = TextEditingController();
   Future<void> _updateMarkerPosition() async {
     try {
@@ -275,6 +275,35 @@ class _HomePageDriverState extends State<driverHome> {
     source_coordinates = LatLng(0, 0);
     destination_coordinates = LatLng(0, 0);
     _updateMarkerPositionDriver();
+  }
+  handle_markers(){
+    setState(() {
+          if(request['source_coordinates'] && request['destination_coordinates']){
+      markers.add( Marker(
+          width: 80.0,
+          height: 80.0,
+          point: request['source_coordinates'],
+          builder: (ctx) => Icon(
+            Icons.location_on,
+            size: 50,
+            color: Colors.red,
+          ),
+        ));
+          markers.add( Marker(
+          width: 80.0,
+          height: 80.0,
+          point: request['destination_coordinates'],
+          builder: (ctx) => Icon(
+            Icons.location_on,
+            size: 50,
+            color: Colors.red,
+          ),
+        ));
+
+    }
+      
+    });
+
   }
 
   void _handleTap(LatLng latLng) async {
@@ -472,7 +501,7 @@ class _HomePageDriverState extends State<driverHome> {
                 options: MapOptions(
                     zoom: 11.0,
                     maxZoom: 19.0,
-                    center: LatLng(25.6872, 32.6396) //_marker.point,
+                    center: _marker_.point //_marker.point,
                     ),
                 children: [
                   TileLayer(
@@ -480,7 +509,10 @@ class _HomePageDriverState extends State<driverHome> {
                         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.example.app',
                   ),
-                  MarkerLayer(markers: [_marker_])
+                  MarkerLayer(
+                     markers: show ? [ _marker_, ...markers ] : [ _marker_ ],
+                  ),
+
                 ]),
 
             // /********************************************** */
