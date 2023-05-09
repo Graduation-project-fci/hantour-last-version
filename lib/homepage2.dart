@@ -277,16 +277,21 @@ class _HomePage2State extends State<HomePage2> {
                 ),
                 Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 50, left: 30),
-                      child: CircleAvatar(
-                        backgroundColor: const Color.fromARGB(255, 6, 42, 70),
-                        radius: 80,
-                        backgroundImage: PersonalImageLink !=
-                                '' // add null check operator
-                            ? NetworkImage(
-                                PersonalImageLink) // add non-null assertion operator
-                            : null,
+                    GestureDetector(
+                      onTap: uploadImage,
+                      child: Padding(
+                        
+                        padding: const EdgeInsets.only(top: 50, left: 30),
+                        child: CircleAvatar(
+                          backgroundColor: const Color.fromARGB(255, 6, 42, 70),
+                          radius: 80,
+                          backgroundImage: PersonalImageLink !=
+                                  '' // add null check operator
+                              ? NetworkImage(
+                                  PersonalImageLink) // add non-null assertion operator
+                              : null,
+                      
+                        ),
                       ),
                     ),
                     Padding(
