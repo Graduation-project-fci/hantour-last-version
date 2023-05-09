@@ -37,8 +37,78 @@ class _HomePage2State extends State<HomePage2> {
   final MapController _mapController = MapController();
   CollectionReference requests =
       FirebaseFirestore.instance.collection('Requests');
+
+  Future<List<String>> getDriverIds(String collectionPath) async {
+    final collectionRef = FirebaseFirestore.instance.collection(collectionPath);
+    final snapshot = await collectionRef.get();
+    final ids = snapshot.docs.map((doc) => doc.id).toList();
+    return ids;
+  }
+
+  Future<List<dynamic>> getUserTokens(List<String> driverIds) async {
+    final userTokensCollectionRef =
+        FirebaseFirestore.instance.collection('UserTokens');
+    final batchSize = 10;
+    final chunks = [
+      for (var i = 0; i < driverIds.length; i += batchSize)
+        driverIds.sublist(i,
+            i + batchSize > driverIds.length ? driverIds.length : i + batchSize)
+    ];
+
+    final userTokens = [];
+    for (final chunk in chunks) {
+      final userTokensQuerySnapshot = await userTokensCollectionRef
+          .where(FieldPath.documentId, whereIn: chunk)
+          .get();
+      userTokens.addAll(
+          userTokensQuerySnapshot.docs.map((doc) => doc.data()['token']));
+    }
+
+    return userTokens;
+  }
+
+  Future<void> sendNotification_2(
+      List<dynamic> deviceTokens, String title, String message) async {
+    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization':
+          'key=AAAAGx_dmbw:APA91bGUVawdCUxK4PTR_Q2uiPkd4DBd7W3_UgVPPdCG1GseD3_taSDP0XT_AvFS_uqtDZ_ziAZ026CcR-tg8z6flGssRvkCZYx_NtSDtR5YPe7I2EhgZfga4N5uu2jBiXPsA86Buz_I',
+    };
+    final body = jsonEncode({
+      'notification': {
+        'title': title,
+        'body': message,
+        'icon': '@mipmap/logo2',
+        'sound': 'default',
+        'priority': 'high',
+      },
+      'registration_ids':
+          deviceTokens, // set the registration IDs to an array of device tokens
+    });
+    final response = await http.post(url, headers: headers, body: body);
+    print(response.statusCode);
+    print('message: $message');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to send notification.');
+    }
+  }
+
+  var distance = '0';
+
+  String source_location = '';
+  String destination_location = '';
   Future<void> addPassengerRequest(
       GeoPoint sourceLocation, GeoPoint destinationLocation) async {
+    setState(() {
+      source_location = _searchController_source.text.trim();
+      destination_location = _searchCont_destination.text.trim();
+      distance = calculateDistance(
+          _currentPosition.latitude,
+          _currentPosition.longitude,
+          source_coordinates.latitude,
+          source_coordinates.longitude);
+    });
     final collectionRef = FirebaseFirestore.instance.collection('Requests');
     final geo = GeoFlutterFire();
     final sourceGeoPoint = geo.point(
@@ -69,6 +139,17 @@ class _HomePage2State extends State<HomePage2> {
     };
 
     await collectionRef.add(data);
+    // final Drivers = await getDriverIds('basicInfo');
+
+    final driverIds = await getDriverIds('Drivers');
+    final userTokens = await getUserTokens(driverIds);
+
+    Future.delayed(
+        Duration(seconds: 10),
+        () => {
+              sendNotification_2(userTokens, 'New Ride Request',
+                  '${Name} made Ride Request at a distance of ${distance}\nfrom ${source_location} to${destination_location}')
+            });
   }
 
   late Position _currentPosition;
@@ -77,7 +158,7 @@ class _HomePage2State extends State<HomePage2> {
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
       _currentPosition = position;
-      _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
+      // _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
     });
   }
 
@@ -149,6 +230,7 @@ class _HomePage2State extends State<HomePage2> {
     try {
       // retrieve the user's current location using geolocator
       Position position = await Geolocator.getCurrentPosition();
+
       // create a new marker object with the updated position
       Marker updatedMarker = Marker(
         point: LatLng(position.latitude, position.longitude),
@@ -194,6 +276,8 @@ class _HomePage2State extends State<HomePage2> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getCurrentLocation();
+
     fetchData();
     print(Email);
 
@@ -280,7 +364,6 @@ class _HomePage2State extends State<HomePage2> {
                     GestureDetector(
                       onTap: uploadImage,
                       child: Padding(
-                        
                         padding: const EdgeInsets.only(top: 50, left: 30),
                         child: CircleAvatar(
                           backgroundColor: const Color.fromARGB(255, 6, 42, 70),
@@ -290,7 +373,6 @@ class _HomePage2State extends State<HomePage2> {
                               ? NetworkImage(
                                   PersonalImageLink) // add non-null assertion operator
                               : null,
-                      
                         ),
                       ),
                     ),
