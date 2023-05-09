@@ -116,8 +116,9 @@ class _fpageState extends State<fpage> {
     final body = jsonEncode({
       'notification': {
         'title': title, 'body': message,
-        'icon': '@mipmap/logo1', // add the icon property here
+        'icon': '@mipmap/logo2', // add the icon property here
         'sound': 'default',
+        'priority': 'high',
       },
       'to': deviceToken,
     });
