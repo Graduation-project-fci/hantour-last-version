@@ -151,6 +151,7 @@ class _HomePageDriverState extends State<driverHome> {
       throw 'Could not launch $phoneNumber';
     }
   }
+
   List<Marker> markers = [];
   TextEditingController _offer_controller = TextEditingController();
   Future<void> _updateMarkerPosition() async {
@@ -202,6 +203,25 @@ class _HomePageDriverState extends State<driverHome> {
     } else {
       return "Unable to retrieve address";
     }
+  }
+
+  String source_location = '';
+  String destination_location = '';
+  String price = '';
+  Future<void> makeRide() async {
+    final AcceptedRides =
+        FirebaseFirestore.instance.collection('AcceptedRides');
+    final data = {
+      'rider_id': request['rider_id'],
+      'driver_id': FirebaseAuth.instance.currentUser!.uid,
+      'source_location': source_location,
+      'destination_location': destination_location,
+      'price': price,
+      'status': 'waiting',
+      'start_date': DateTime.now(),
+      'end_date': DateTime.now(),
+    };
+    await AcceptedRides.add(data);
   }
 
   readrequest() async {
@@ -276,10 +296,11 @@ class _HomePageDriverState extends State<driverHome> {
     destination_coordinates = LatLng(0, 0);
     _updateMarkerPositionDriver();
   }
-  handle_markers(){
+
+  handle_markers() {
     setState(() {
-          if(request['source_coordinates'] && request['destination_coordinates']){
-      markers.add( Marker(
+      if (request['source_coordinates'] && request['destination_coordinates']) {
+        markers.add(Marker(
           width: 80.0,
           height: 80.0,
           point: request['source_coordinates'],
@@ -289,7 +310,7 @@ class _HomePageDriverState extends State<driverHome> {
             color: Colors.red,
           ),
         ));
-          markers.add( Marker(
+        markers.add(Marker(
           width: 80.0,
           height: 80.0,
           point: request['destination_coordinates'],
@@ -299,11 +320,8 @@ class _HomePageDriverState extends State<driverHome> {
             color: Colors.red,
           ),
         ));
-
-    }
-      
+      }
     });
-
   }
 
   void _handleTap(LatLng latLng) async {
@@ -510,9 +528,8 @@ class _HomePageDriverState extends State<driverHome> {
                     userAgentPackageName: 'com.example.app',
                   ),
                   MarkerLayer(
-                     markers: show ? [ _marker_, ...markers ] : [ _marker_ ],
+                    markers: show ? [_marker_, ...markers] : [_marker_],
                   ),
-
                 ]),
 
             // /********************************************** */
@@ -680,51 +697,39 @@ class _HomePageDriverState extends State<driverHome> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                margin: EdgeInsets.all(5),
-                                alignment: Alignment.center,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(6),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 10,
-                                      )
-                                    ]),
-                                child: const Text('Accept Order',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    )),
+                              GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    source_location =
+                                        request['source_location'];
+                                    destination_location =
+                                        request['destination_location'];
+                                    price:
+                                    request['price'];
+                                  });
+                                  await makeRide();
+                                 await  requests.doc('${widget.id}').update({'status': 'waiting'});
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.all(5),
+                                  alignment: Alignment.center,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(6),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 10,
+                                        )
+                                      ]),
+                                  child: const Text('Accept Order',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      )),
+                                ),
                               ),
-                              // Row(
-                              //   children: [
-                              //     Icon(
-                              //       Icons.comment,
-                              //       color: Colors.grey,
-                              //     ),
-                              //     Container(
-                              //       // padding: EdgeInsets.all(),
-                              //       margin: EdgeInsets.symmetric(
-                              //           horizontal: 20, vertical: 10),
-                              //       width: MediaQuery.of(context).size.width - 80,
-                              //       height: 40,
-                              //       child: TextFormField(
-                              //         keyboardType: TextInputType.emailAddress,
-                              //         obscureText: false,
-                              //         decoration: InputDecoration(
-                              //             fillColor: Colors.white,
-                              //             hintText: 'Write comment or notation to Driver',
-                              //             border: UnderlineInputBorder(),
-                              //             contentPadding: const EdgeInsets.all(0),
-                              //             hintStyle: const TextStyle(
-                              //                 height: 1, color: Colors.grey)),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
                             ],
                           ),
                         ),

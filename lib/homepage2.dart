@@ -98,11 +98,13 @@ class _HomePage2State extends State<HomePage2> {
 
   String source_location = '';
   String destination_location = '';
+  String price = '';
   Future<void> addPassengerRequest(
       GeoPoint sourceLocation, GeoPoint destinationLocation) async {
     setState(() {
       source_location = _searchController_source.text.trim();
       destination_location = _searchCont_destination.text.trim();
+      price = _offer_controller.text.trim();
       distance = calculateDistance(
           _currentPosition.latitude,
           _currentPosition.longitude,
@@ -130,9 +132,9 @@ class _HomePage2State extends State<HomePage2> {
       'destination_coordinates': destinationGeoPoint.data,
       'payment_method': 'cash',
       'status': 'pending',
-      'source_location': _searchController_source.text.trim(),
-      'destination_location': _searchCont_destination.text.trim(),
-      'price': _offer_controller.text.trim(),
+      'source_location': source_location,
+      'destination_location': destination_location,
+      'price': price,
       'image': PersonalImageLink,
       'phone_number': Phone_number,
       'name': Name
@@ -202,6 +204,8 @@ class _HomePage2State extends State<HomePage2> {
 
     // do something with the data
   }
+
+
 
   double heightvar = 30;
   double _height = 300.0;

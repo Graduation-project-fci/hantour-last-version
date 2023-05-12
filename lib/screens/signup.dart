@@ -51,7 +51,7 @@ class signupscreen extends StatelessWidget {
     String? confirmpassword;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registration Page'),
+        title: const Text('Registration Page'),
         backgroundColor: Color(0xFF0B0742),
       ),
       body: SingleChildScrollView(
@@ -64,13 +64,13 @@ class signupscreen extends StatelessWidget {
                 backgroundColor: Colors.grey,
                 backgroundImage: AssetImage('assets/login.jpg'),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               ElevatedButton(
                 onPressed: (){},
                 //onPressed:()=> uploadImage(_auth.currentUser!.uid,"personal_images"),
-                child: Text(
+                child:  Text(
                   'Add a Photo',
-                  style: TextStyle(
+                  style:  TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -80,7 +80,7 @@ class signupscreen extends StatelessWidget {
                   primary: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Colors.grey,
                       width: 1.0,
                     ),
@@ -211,7 +211,7 @@ class signupscreen extends StatelessWidget {
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'weak-password') {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                               const  SnackBar(
                                   content: Text('The password provided is too weak.'),
                                 ),
                               );
@@ -219,7 +219,7 @@ class signupscreen extends StatelessWidget {
                               print('The password provided is too weak.');
                             } else if (e.code == 'email-already-in-use') {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                             const    SnackBar(
                                   content: Text('The account already exists for that email.'),
                                 ),
                               );
@@ -237,7 +237,7 @@ class signupscreen extends StatelessWidget {
                         alignment: Alignment.center,
                         height: 55,
                         decoration: BoxDecoration(
-                            color: Color(0xFF0B0742),
+                            color:const Color(0xFF0B0742),
                             borderRadius: BorderRadius.circular(6),
                             boxShadow: [
                               BoxShadow(
@@ -245,7 +245,7 @@ class signupscreen extends StatelessWidget {
                                 blurRadius: 10,
                               )
                             ]),
-                        child: Text('Sign Up',
+                        child: const Text('Sign Up',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,

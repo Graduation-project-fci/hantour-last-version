@@ -51,9 +51,9 @@ class socialLogin extends StatelessWidget {
       children: [
         Container(
           alignment: Alignment.center,
-          child: Text(
+          child: const Text(
             '- Or Sign In With -',
-            style: TextStyle(
+            style:  TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w600,
               fontSize: 15,
@@ -81,7 +81,7 @@ class socialLogin extends StatelessWidget {
                       bool role = await isUserDriver();
                         if (role) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                           const  SnackBar(
                               content: Text('Your are driver.'),
                             ),
                           );
@@ -97,7 +97,7 @@ class socialLogin extends StatelessWidget {
 
                     }catch(e){
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text('Some Error Occurred, Please try again.'),
                         ),
                       );
@@ -119,7 +119,7 @@ class socialLogin extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Image(
+                  child: const Image(
                     image: AssetImage('assets/images/google.png'),
                     height: 25,
                   ),
@@ -141,7 +141,7 @@ class socialLogin extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Image(
+                  child: const Image(
                     image: AssetImage('assets/images/facebook.png'),
                     height: 25,
                   ),
@@ -162,7 +162,7 @@ class socialLogin extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Image(
+                  child:const  Image(
                     image: AssetImage('assets/images/twitter.png'),
                     height: 25,
                   ),
