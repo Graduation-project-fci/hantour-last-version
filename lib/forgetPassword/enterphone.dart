@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class EnterPhoneForgetPassword extends StatefulWidget {
@@ -9,6 +10,7 @@ class EnterPhoneForgetPassword extends StatefulWidget {
 }
 
 class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
+  TextEditingController PasswordEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,11 +94,12 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                     ],
                                   ),
                                   child: Form(
-                                    // key: passkey,
+                                    // key: passkey, 
                                     child: TextFormField(
+                                      controller: PasswordEditingController,
                                       validator: (value) {
-                                        if (value!.length < 11) {
-                                          return 'Invalid phone number';
+                                        if (value!.isEmpty) {
+                                          return 'Enter Your Email';
                                         }
                                         return null;
                                       },
@@ -104,7 +107,7 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                       keyboardType: TextInputType.number,
                                       obscureText: false,
                                       decoration: InputDecoration(
-                                          hintText: 'Enter Phone Number',
+                                          hintText: 'Enter Your Email',
                                           border: InputBorder.none,
                                           contentPadding:
                                               const EdgeInsets.all(0),
@@ -142,6 +145,13 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                   ),
                                 ),
                                 InkWell(
+                                  onTap: () async {
+                                    await FirebaseAuth.instance
+                                        .sendPasswordResetEmail(
+                                            email: PasswordEditingController
+                                                .text
+                                                .trim());
+                                  },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     height: 50,
