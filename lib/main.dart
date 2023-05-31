@@ -23,8 +23,10 @@ import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
 import 'package:hantourgo/screens/signup.dart';
 import 'package:hantourgo/screens/registerationScreens/driver_signup.dart';
 import 'package:hantourgo/screens/driverscreens/driver_home.dart';
+import 'package:hantourgo/sendNotification/testSendNotification.dart';
 import 'package:hantourgo/teckets/ticket.dart';
 import 'package:http/http.dart' as http;
+import 'forgetPassword/enterphone.dart';
 import 'screens/newFile.dart';
 
 import 'homepage2.dart';
@@ -36,8 +38,6 @@ void main() async {
   await FirebaseMessaging.instance.getInitialMessage();
   runApp(MyApp());
 }
-
-
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -52,13 +52,12 @@ class MyHttpOverrides extends HttpOverrides {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: fpage(),
+      home: const EnterPhoneForgetPassword(),
       routes: {
         "SplashScreen": (context) => fpage(),
         'wallet': (context) => mywallet(),
@@ -69,7 +68,7 @@ class MyApp extends StatelessWidget {
         'Home': (context) => HomePage(),
         'tickethistory': (context) => reportOfTickets(),
         'Orders': (context) => Orders(),
-
+        'HOME2': (context) => HomePage2(),
         'basicinfo': (context) => BasicInfo(),
         'certificate': (context) => certificate_vehicle(),
         'criminal': (context) => criminal_record(),

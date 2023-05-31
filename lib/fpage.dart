@@ -47,12 +47,12 @@ class _fpageState extends State<fpage> {
     getTokwn();
   }
 
-  String token =
-      'duXws4e_TCOBwbigt-fP__:APA91bHwnvW-KLth9-LF-A7_x-1SEz31HBdQKaVNMaY0-zmiLRfpJDuolVBakDpwjIFoxZBNqQZxKAXi4AvfazTipMrkhuEnf4WU_BQGKBvMT0ga7Z9MCIB_LeVPSikJy3HhDooqx0ci';
+  String tokenoo =
+      'fA_fbsfYTPW0sVjJsdKZAp:APA91bEpjIXsJnyHEPBjwLHtXrfOmPXhwB1w8vtRz5dWikTlmIo7tSAQBpWmcDW0Ljg4dTt5iBu_2tFqBCCEVK6zvFpp4vGxF8bAkal5HWUTr4bh097jwmtHASrhzBy9F_XXC6uqEgio';
   void getTokwn() async {
     await FirebaseMessaging.instance.getToken().then((token) => {
           setState(() {
-            token = token;
+            tokenoo = token!;
             print('my toekn is ${token}');
             saveToken(token!);
           })
@@ -105,15 +105,13 @@ class _fpageState extends State<fpage> {
   //   }
   // }
 
- 
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 3), () {
       final FirebaseAuth auth = FirebaseAuth.instance;
       User? user = auth.currentUser;
       if (user != null) {
         print(user.uid);
-     
-       
+
         // user is signed in
         // Get.to(HomePage());
         Get.to(loginpage());

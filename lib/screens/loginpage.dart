@@ -97,7 +97,7 @@ class loginpage extends StatelessWidget {
       String user, String password, String screen, BuildContext context) async {
     try {
       UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: user,
         password: password,
       );
@@ -105,7 +105,7 @@ class loginpage extends StatelessWidget {
       if (userCredential.user != null) {
         bool role = await isUserDriver();
         if (role) {
-         Navigator.pushNamed(context, 'Driverhome');
+          Navigator.pushNamed(context, 'Driverhome');
         } else {
           Navigator.pushReplacement(
             context,
@@ -246,19 +246,19 @@ class loginpage extends StatelessWidget {
                       try {
                         final credential = await FirebaseAuth.instance
                             .signInWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text);
+                                email: emailController.text,
+                                password: passwordController.text);
                         bool role = await isUserDriver();
                         if (role) {
-                        
                           Navigator.pushNamed(context, 'Driverhome');
                         } else {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => HomePage2(),
-                            ),
-                          );
+                          // Navigator.pushReplacement(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (BuildContext context) => HomePage2(),
+                          //   ),
+                          // );
+                          Navigator.pushNamed(context, 'HOME2');
                         }
                         // Navigator.pushNamed(context, 'Home');
                       } on FirebaseAuthException catch (e) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/ui/firebase_sorted_list.dart';
 import 'package:geocoding/geocoding.dart';
@@ -44,6 +45,21 @@ class _HomePage2State extends State<HomePage2> {
     final ids = snapshot.docs.map((doc) => doc.id).toList();
     return ids;
   }
+
+  // void sendNotificationsToUsers(List<String> users) {
+  //   for (String user in users) {
+  //     // Create a notification content
+  //     NotificationContent content = NotificationContent(
+  //       id: 1,
+  //       channelKey: 'basic_channel',
+  //       title: 'New Message',
+  //       body: 'You have a new message from $user',
+  //     );
+
+  //     // Schedule the notification
+  //     AwesomeNotifications().createNotification(content: content);
+  //   }
+  // }
 
   Future<List<dynamic>> getUserTokens(List<String> driverIds) async {
     final userTokensCollectionRef =
@@ -105,11 +121,11 @@ class _HomePage2State extends State<HomePage2> {
       source_location = _searchController_source.text.trim();
       destination_location = _searchCont_destination.text.trim();
       price = _offer_controller.text.trim();
-      distance = calculateDistance(
-          _currentPosition.latitude,
-          _currentPosition.longitude,
-          source_coordinates.latitude,
-          source_coordinates.longitude);
+      // distance = calculateDistance(
+      //     _currentPosition.latitude,
+      //     _currentPosition.longitude,
+      //     source_coordinates.latitude,
+      //     source_coordinates.longitude);
     });
     final collectionRef = FirebaseFirestore.instance.collection('Requests');
     final geo = GeoFlutterFire();
@@ -154,22 +170,30 @@ class _HomePage2State extends State<HomePage2> {
             });
   }
 
-  late Position _currentPosition;
-  MapController mapPosition = MapController();
-  void _getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition();
-    setState(() {
-      _currentPosition = position;
-      // _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
-    });
-  }
+  // var Position _currentPosition = Position(longitude: 30.016635976127848, latitude: 31.141072330220332);
+  // MapController mapPosition = MapController();
+  // void _getCurrentLocation() async {
+  //   Position position = await Geolocator.getCurrentPosition();
+  //   setState(() {
+  //     _currentPosition = position;
+  //     // _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
+  //   });
+  // }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    final driverQuerySnapshot = await FirebaseFirestore.instance
-        .collection('Riders')
-        .doc(user!.uid)
-        .get();
+    late final driverQuerySnapshot;
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      driverQuerySnapshot = await FirebaseFirestore.instance
+          .collection('Riders')
+          .doc(user!.uid)
+          .get();
+    } catch (exception) {
+      print('Error fetching user data: $exception');
+      // Handle the error accordingly (e.g., display an error message, retry, etc.)
+      // You can also throw the exception or return an error value, depending on your requirements.
+      // For simplicity, returning null is shown here as an example.
+    }
     return driverQuerySnapshot;
   }
 
@@ -204,8 +228,6 @@ class _HomePage2State extends State<HomePage2> {
 
     // do something with the data
   }
-
-
 
   double heightvar = 30;
   double _height = 300.0;
@@ -280,7 +302,7 @@ class _HomePage2State extends State<HomePage2> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getCurrentLocation();
+    // _getCurrentLocation();
 
     fetchData();
     print(Email);
@@ -570,7 +592,7 @@ class _HomePage2State extends State<HomePage2> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: _getCurrentLocation,
+                              // onTap: _getCurrentLocation,
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Colors.white,
@@ -843,6 +865,8 @@ class _HomePage2State extends State<HomePage2> {
                                         source_coordinates.longitude),
                                     GeoPoint(destination_coordinates.latitude,
                                         destination_coordinates.longitude));
+                              } else {
+                                print("No");
                               }
 
                               _searchCont_destination.text = '';
@@ -852,6 +876,8 @@ class _HomePage2State extends State<HomePage2> {
                               setState(() {
                                 markers = [];
                               });
+                              print(_searchController_source.text);
+                              print(_searchCont_destination.text);
                             },
                             child: Container(
                               alignment: Alignment.center,
