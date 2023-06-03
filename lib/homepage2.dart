@@ -876,10 +876,8 @@ class _HomePage2State extends State<HomePage2> {
                                 // print(usertokens);
                                 print('\n\n');
                                 var api = API();
-                                api.sendAndRetrieveMessage(
-                                    usertokens,
-                                    'New Request',
-                                    'from $_searchController_source.text to $_searchCont_destination.text');
+                                api.sendAndRetrieveMessage(usertokens, '$Name',
+                                    'Get More money by making');
                               } else {
                                 print("No");
                               }

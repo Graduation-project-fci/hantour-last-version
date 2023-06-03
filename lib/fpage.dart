@@ -44,20 +44,20 @@ class _fpageState extends State<fpage> {
     // TODO: implement initState
     super.initState();
     // requestMessge();
-    getTokwn();
+    // getTokwn();
   }
 
-  String tokenoo =
-      'fA_fbsfYTPW0sVjJsdKZAp:APA91bEpjIXsJnyHEPBjwLHtXrfOmPXhwB1w8vtRz5dWikTlmIo7tSAQBpWmcDW0Ljg4dTt5iBu_2tFqBCCEVK6zvFpp4vGxF8bAkal5HWUTr4bh097jwmtHASrhzBy9F_XXC6uqEgio';
-  void getTokwn() async {
-    await FirebaseMessaging.instance.getToken().then((token) => {
-          setState(() {
-            tokenoo = token!;
-            print('my toekn is ${token}');
-            saveToken(token!);
-          })
-        });
-  }
+  // String tokenoo =
+  //     'fA_fbsfYTPW0sVjJsdKZAp:APA91bEpjIXsJnyHEPBjwLHtXrfOmPXhwB1w8vtRz5dWikTlmIo7tSAQBpWmcDW0Ljg4dTt5iBu_2tFqBCCEVK6zvFpp4vGxF8bAkal5HWUTr4bh097jwmtHASrhzBy9F_XXC6uqEgio';
+  // void getTokwn() async {
+  //   await FirebaseMessaging.instance.getToken().then((token) => {
+  //         setState(() {
+  //           tokenoo = token!;
+  //           print('my toekn is ${token}');
+  //           saveToken(token!);
+  //         })
+  //       });
+  // }
 
   void saveToken(String token) {
     FirebaseFirestore.instance
