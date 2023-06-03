@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:hantourgo/homePage.dart';
 import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
+import 'package:hantourgo/sendNotification/SenderActor.dart';
 
 import '../button.dart';
 import '../customloginButton/costumloginbutton.dart';
@@ -240,6 +241,8 @@ class loginpage extends StatelessWidget {
                 //     emailController, passwordController),
                 InkWell(
                   onTap: () async {
+                    retrieveFCMToken();
+
                     if (_formKey.currentState!.validate() &&
                         passkey.currentState!.validate()) {
                       // Form is valid, do something here
@@ -249,15 +252,10 @@ class loginpage extends StatelessWidget {
                                 email: emailController.text,
                                 password: passwordController.text);
                         bool role = await isUserDriver();
+
                         if (role) {
                           Navigator.pushNamed(context, 'Driverhome');
                         } else {
-                          // Navigator.pushReplacement(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (BuildContext context) => HomePage2(),
-                          //   ),
-                          // );
                           Navigator.pushNamed(context, 'HOME2');
                         }
                         // Navigator.pushNamed(context, 'Home');

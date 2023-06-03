@@ -36,6 +36,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseMessaging.instance.getInitialMessage();
+  // initializeBackgroundMessaging();
   runApp(MyApp());
 }
 
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const EnterPhoneForgetPassword(),
+      home: fpage(),
       routes: {
         "SplashScreen": (context) => fpage(),
         'wallet': (context) => mywallet(),

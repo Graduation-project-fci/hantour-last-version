@@ -1,4 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:hantourgo/sendNotification/SenderActor.dart';
+import 'package:hantourgo/sendNotification/api.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class EnterPhoneForgetPassword extends StatefulWidget {
   const EnterPhoneForgetPassword({super.key});
@@ -9,6 +16,16 @@ class EnterPhoneForgetPassword extends StatefulWidget {
 }
 
 class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
+  TextEditingController PasswordEditingController = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  final String serverToken =
+      'AAAAGx_dmbw:APA91bGUVawdCUxK4PTR_Q2uiPkd4DBd7W3_UgVPPdCG1GseD3_taSDP0XT_AvFS_uqtDZ_ziAZ026CcR-tg8z6flGssRvkCZYx_NtSDtR5YPe7I2EhgZfga4N5uu2jBiXPsA86Buz_I';
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,17 +111,12 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                   child: Form(
                                     // key: passkey,
                                     child: TextFormField(
-                                      validator: (value) {
-                                        if (value!.length < 11) {
-                                          return 'Invalid phone number';
-                                        }
-                                        return null;
-                                      },
+                                      controller: PasswordEditingController,
                                       // controller: passwordController,
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: TextInputType.emailAddress,
                                       obscureText: false,
                                       decoration: InputDecoration(
-                                          hintText: 'Enter Phone Number',
+                                          hintText: 'Enter Email',
                                           border: InputBorder.none,
                                           contentPadding:
                                               const EdgeInsets.all(0),
@@ -115,7 +127,19 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                   ),
                                 ),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () async {
+                                    retrieveFCMToken();
+                                    List<String> usertokens = [];
+                                    usertokens =
+                                        await fetchAllTokens() as List<String>;
+                                    print(
+                                        '=======================Tokens====================\n');
+                                    // print(usertokens);
+                                    print('\n\n');
+                                    var api = API();
+                                    api.sendAndRetrieveMessage(usertokens,
+                                        'mostafa malik', 'New Request');
+                                  },
                                   child: Container(
                                     alignment: Alignment.center,
                                     height: 55,
@@ -142,6 +166,11 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                   ),
                                 ),
                                 InkWell(
+                                  onTap: () {
+                                    var api = API();
+                                    api.ResetPassword(
+                                        PasswordEditingController.text.trim());
+                                  },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     height: 50,

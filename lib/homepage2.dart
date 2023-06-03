@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:hantourgo/sendNotification/SenderActor.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/ui/firebase_sorted_list.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:hantourgo/firebase_Services/authentication.dart';
+import 'package:hantourgo/sendNotification/api.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
@@ -856,7 +858,7 @@ class _HomePage2State extends State<HomePage2> {
                           margin: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           child: InkWell(
-                            onTap: () {
+                            onTap: () async {
                               if (_searchController_source.text.isNotEmpty &&
                                   _searchCont_destination.text.isNotEmpty &&
                                   _offer_controller.text.isNotEmpty) {
@@ -865,6 +867,19 @@ class _HomePage2State extends State<HomePage2> {
                                         source_coordinates.longitude),
                                     GeoPoint(destination_coordinates.latitude,
                                         destination_coordinates.longitude));
+                                retrieveFCMToken();
+                                List<String> usertokens = [];
+                                usertokens =
+                                    await fetchAllTokens() as List<String>;
+                                print(
+                                    '=======================Tokens====================\n');
+                                // print(usertokens);
+                                print('\n\n');
+                                var api = API();
+                                api.sendAndRetrieveMessage(
+                                    usertokens,
+                                    'New Request',
+                                    'from $_searchController_source.text to $_searchCont_destination.text');
                               } else {
                                 print("No");
                               }

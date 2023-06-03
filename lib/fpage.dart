@@ -17,25 +17,25 @@ class fpage extends StatefulWidget {
   State<fpage> createState() => _fpageState();
 }
 
-void requestMessge() async {
-  FirebaseMessaging messaging = await FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true);
+// void requestMessge() async {
+//   FirebaseMessaging messaging = await FirebaseMessaging.instance;
+//   NotificationSettings settings = await messaging.requestPermission(
+//       alert: true,
+//       announcement: false,
+//       badge: true,
+//       carPlay: false,
+//       criticalAlert: false,
+//       provisional: false,
+//       sound: true);
 
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print('Permission granted');
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    print('user granted Provisional persmission');
-  } else {
-    print('user denied Permission');
-  }
-}
+//   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+//     print('Permission granted');
+//   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+//     print('user granted Provisional persmission');
+//   } else {
+//     print('user denied Permission');
+//   }
+// }
 
 class _fpageState extends State<fpage> {
   // const fpage({key? key}) : super(key: key);
@@ -43,7 +43,7 @@ class _fpageState extends State<fpage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    requestMessge();
+    // requestMessge();
     getTokwn();
   }
 
