@@ -7,20 +7,19 @@ import 'dart:convert';
 FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-void retrieveFCMToken() async {
-  String? token = await firebaseMessaging.getToken();
+void retrieveFCMToken(String CollectionName, String token) async {
   print('FCM Token: $token');
   // Save the token to Firebase
-  saveTokenToFirebase(token!);
+  saveTokenToFirebase(token!, '${CollectionName}');
 }
 
-void saveTokenToFirebase(String token) async {
+void saveTokenToFirebase(String token, String CollectionName) async {
   List<String> TOKENS = [];
-  TOKENS = await fetchAllTokens();
+  TOKENS = await fetchAllTokens('${CollectionName}');
   var api = API();
   if (api.Is_Token_Exists(token, TOKENS) == false) {
     await FirebaseFirestore.instance
-        .collection('UserTokens')
+        .collection('${CollectionName}')
         .doc() // Optionally, you can provide a specific document ID
         .set({'token': token});
     print('Token saved to Firebase');
@@ -29,13 +28,14 @@ void saveTokenToFirebase(String token) async {
   }
 }
 
-Future<List<String>> fetchAllTokens() async {
+Future<List<String>> fetchAllTokens(String CollectionName) async {
   try {
     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance.collection('UserTokens').get();
+        await FirebaseFirestore.instance.collection('${CollectionName}').get();
 
     final List<String> tokens =
         querySnapshot.docs.map((doc) => doc.data()['token'] as String).toList();
+    print("all token from driver collection");
 
     return tokens;
   } catch (e, stackTrace) {

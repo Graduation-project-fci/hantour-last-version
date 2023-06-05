@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:hantourgo/sendNotification/SenderActor.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_database/ui/firebase_sorted_list.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:hantourgo/firebase_Services/authentication.dart';
 import 'package:hantourgo/sendNotification/api.dart';
+import 'package:hantourgo/sendNotification/firebaseFunction.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,8 @@ class HomePage2 extends StatefulWidget {
 }
 
 class _HomePage2State extends State<HomePage2> {
+  String device_token = "";
+  firebaseFunctions fire = firebaseFunctions();
   int clicktab = 1;
   late Marker _marker = Marker(
     point: LatLng(0, 0),
@@ -47,21 +51,6 @@ class _HomePage2State extends State<HomePage2> {
     final ids = snapshot.docs.map((doc) => doc.id).toList();
     return ids;
   }
-
-  // void sendNotificationsToUsers(List<String> users) {
-  //   for (String user in users) {
-  //     // Create a notification content
-  //     NotificationContent content = NotificationContent(
-  //       id: 1,
-  //       channelKey: 'basic_channel',
-  //       title: 'New Message',
-  //       body: 'You have a new message from $user',
-  //     );
-
-  //     // Schedule the notification
-  //     AwesomeNotifications().createNotification(content: content);
-  //   }
-  // }
 
   Future<List<dynamic>> getUserTokens(List<String> driverIds) async {
     final userTokensCollectionRef =
@@ -83,33 +72,6 @@ class _HomePage2State extends State<HomePage2> {
     }
 
     return userTokens;
-  }
-
-  Future<void> sendNotification_2(
-      List<dynamic> deviceTokens, String title, String message) async {
-    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization':
-          'key=AAAAGx_dmbw:APA91bGUVawdCUxK4PTR_Q2uiPkd4DBd7W3_UgVPPdCG1GseD3_taSDP0XT_AvFS_uqtDZ_ziAZ026CcR-tg8z6flGssRvkCZYx_NtSDtR5YPe7I2EhgZfga4N5uu2jBiXPsA86Buz_I',
-    };
-    final body = jsonEncode({
-      'notification': {
-        'title': title,
-        'body': message,
-        'icon': '@mipmap/logo2',
-        'sound': 'default',
-        'priority': 'high',
-      },
-      'registration_ids':
-          deviceTokens, // set the registration IDs to an array of device tokens
-    });
-    final response = await http.post(url, headers: headers, body: body);
-    print(response.statusCode);
-    print('message: $message');
-    if (response.statusCode != 200) {
-      throw Exception('Failed to send notification.');
-    }
   }
 
   var distance = '0';
@@ -143,7 +105,9 @@ class _HomePage2State extends State<HomePage2> {
 // ...
 
 // Download the image from Firebase Storage
+    firebaseFunctions fire = firebaseFunctions();
 
+    fire.getDeviceToken(device_token!);
     final data = {
       'rider_id': FirebaseAuth.instance.currentUser!.uid,
       'source_coordinates': sourceGeoPoint.data,
@@ -155,7 +119,8 @@ class _HomePage2State extends State<HomePage2> {
       'price': price,
       'image': PersonalImageLink,
       'phone_number': Phone_number,
-      'name': Name
+      'name': Name,
+      'sendertoken': device_token
     };
 
     await collectionRef.add(data);
@@ -163,24 +128,7 @@ class _HomePage2State extends State<HomePage2> {
 
     final driverIds = await getDriverIds('Drivers');
     final userTokens = await getUserTokens(driverIds);
-
-    Future.delayed(
-        Duration(seconds: 10),
-        () => {
-              sendNotification_2(userTokens, 'New Ride Request',
-                  '${Name} made Ride Request at a distance of ${distance}\nfrom ${source_location} to${destination_location}')
-            });
   }
-
-  // var Position _currentPosition = Position(longitude: 30.016635976127848, latitude: 31.141072330220332);
-  // MapController mapPosition = MapController();
-  // void _getCurrentLocation() async {
-  //   Position position = await Geolocator.getCurrentPosition();
-  //   setState(() {
-  //     _currentPosition = position;
-  //     // _mapController.move(LatLng(position.latitude, position.longitude), 15.0);
-  //   });
-  // }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
     late final driverQuerySnapshot;
@@ -305,6 +253,10 @@ class _HomePage2State extends State<HomePage2> {
     // TODO: implement initState
     super.initState();
     // _getCurrentLocation();
+    // fire.getDeviceToken(device_token);
+    firebaseMessaging.getToken().then(
+          (value) => device_token = value!,
+        );
 
     fetchData();
     print(Email);
@@ -867,17 +819,26 @@ class _HomePage2State extends State<HomePage2> {
                                         source_coordinates.longitude),
                                     GeoPoint(destination_coordinates.latitude,
                                         destination_coordinates.longitude));
-                                retrieveFCMToken();
+                                // retrieveFCMToken();
                                 List<String> usertokens = [];
                                 usertokens =
-                                    await fetchAllTokens() as List<String>;
+                                    await fetchAllTokens('DriversTokens')
+                                        as List<String>;
                                 print(
                                     '=======================Tokens====================\n');
                                 // print(usertokens);
                                 print('\n\n');
+                                print(device_token);
                                 var api = API();
+                                String? token =
+                                    await firebaseMessaging.getToken();
+                                // var sendertokrn =
+                                //     api.sendAndRetrieveMessage_New(usertokens,
+                                //         'i am happy', 'A7a', token!);
+                                // print(
+                                //     ' hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh +${sendertokrn}');
                                 api.sendAndRetrieveMessage(usertokens, '$Name',
-                                    'Get More money by making');
+                                    'رحلة جديدة لا تفوتها واربح المزيد من المال');
                               } else {
                                 print("No");
                               }

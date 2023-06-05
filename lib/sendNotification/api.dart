@@ -49,6 +49,84 @@ class API {
     }
   }
 
+  Future<String> sendAndRetrieveMessage_New(List<String> tokens, String title,
+      String body, String Sender_token) async {
+    try {
+      final http.Response response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverToken',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'notification': <String, dynamic>{
+              'body': '$body',
+              'title': '$title',
+            },
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'id': '1',
+              'status': 'done',
+              'name': 'mostafa',
+            },
+            'registration_ids':
+                tokens //'fA_fbsfYTPW0sVjJsdKZAp:APA91bEpjIXsJnyHEPBjwLHtXrfOmPXhwB1w8vtRz5dWikTlmIo7tSAQBpWmcDW0Ljg4dTt5iBu_2tFqBCCEVK6zvFpp4vGxF8bAkal5HWUTr4bh097jwmtHASrhzBy9F_XXC6uqEgio',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification sent successfully');
+      } else {
+        print(
+            'Notification sending failed. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error sending notification: $e');
+    }
+    return Sender_token;
+  }
+
+  void AcceptOrderMessage(String token, String title, String body) async {
+    try {
+      final http.Response response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverToken',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'notification': <String, dynamic>{
+              'body': '$body',
+              'title': '$title',
+            },
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'id': '1',
+              'status': 'done',
+              'name': 'mostafa',
+            },
+            'to':
+                token //'fA_fbsfYTPW0sVjJsdKZAp:APA91bEpjIXsJnyHEPBjwLHtXrfOmPXhwB1w8vtRz5dWikTlmIo7tSAQBpWmcDW0Ljg4dTt5iBu_2tFqBCCEVK6zvFpp4vGxF8bAkal5HWUTr4bh097jwmtHASrhzBy9F_XXC6uqEgio',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification sent successfully to Single user');
+      } else {
+        print(
+            'Notification sending failed. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error sending notification: $e');
+    }
+  }
+
   bool Is_Token_Exists(String token, List<String> Tokens) {
     for (int i = 0; i < Tokens.length; i++) {
       if (Tokens[i] == token) return true;

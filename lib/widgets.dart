@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+
 typedef StringValidator = String? Function(String?);
 
 class widgets extends StatelessWidget {
-  widgets({
-    Key? key,
-    required this.controller,
-    required this.text,
-    required this.textInputType,
-    required this.obscure,
-    required int maxlen,
-    String? data,
-    AutovalidateMode:true, this.validator
-  }) : super(key: key);
+  widgets(
+      {Key? key,
+      required this.controller,
+      required this.text,
+      required this.textInputType,
+      required this.obscure,
+      required int maxlen,
+      String? data,
+      AutovalidateMode: true,
+      this.validator})
+      : super(key: key);
   final TextEditingController controller;
   final String text;
   final TextInputType textInputType;
