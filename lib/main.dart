@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
         'id': (context) => nationalID(),
         'rating': (context) => rating(),
         'signupDriver': (context) => signupscreenDriver(),
-        // 'MapPage': (context) => MapPage()
+       
       },
     );
   }

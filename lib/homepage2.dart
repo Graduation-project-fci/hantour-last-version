@@ -440,7 +440,32 @@ class _HomePage2State extends State<HomePage2> {
                   )
                 ],
               ),
-            )
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: GestureDetector(
+                onTap: () {
+                  print('logout');
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushNamed(context, 'SplashScreen');
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Icon(
+                      Icons.logout_outlined,
+                      color: Colors.red,
+                    ),
+                    Text(
+                      'Log Out',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ), // drawer(),

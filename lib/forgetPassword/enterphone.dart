@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hantourgo/sendNotification/SenderActor.dart';
 import 'package:hantourgo/sendNotification/api.dart';
@@ -14,6 +15,7 @@ class EnterPhoneForgetPassword extends StatefulWidget {
 }
 
 class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
+  TextEditingController mailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,8 +110,9 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                       // controller: passwordController,
                                       keyboardType: TextInputType.emailAddress,
                                       obscureText: false,
+                                      controller: mailController,
                                       decoration: InputDecoration(
-                                          hintText: 'Enter Phone Number',
+                                          hintText: 'Enter Your Email',
                                           border: InputBorder.none,
                                           contentPadding:
                                               const EdgeInsets.all(0),
@@ -121,17 +124,9 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                 ),
                                 InkWell(
                                   onTap: () async {
-                                    // retrieveFCMToken();
-                                    // List<String> usertokens = [];
-                                    // usertokens =
-                                    //     await fetchAllTokens() as List<String>;
-                                    // print(
-                                    //     '=======================Tokens====================\n');
-                                    // // print(usertokens);
-                                    // print('\n\n');
-                                    // var api = API();
-                                    // api.sendAndRetrieveMessage(usertokens,
-                                    //     'mostafa malik', 'New Request');
+                                    await FirebaseAuth.instance
+                                        .sendPasswordResetEmail(
+                                            email: mailController.text.trim());
                                   },
                                   child: Container(
                                     alignment: Alignment.center,

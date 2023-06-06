@@ -65,39 +65,7 @@ class _HomePageDriverState extends State<driverHome> {
     return snapshot.data();
   }
 
-  // Future<void> sendNotification_2(
-  //     List<dynamic> deviceTokens, String title, String message) async {
-  //   final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-  //   final headers = {
-  //     'Content-Type': 'application/json',
-  //     'Authorization':
-  //         'key=AAAAGx_dmbw:APA91bGUVawdCUxK4PTR_Q2uiPkd4DBd7W3_UgVPPdCG1GseD3_taSDP0XT_AvFS_uqtDZ_ziAZ026CcR-tg8z6flGssRvkCZYx_NtSDtR5YPe7I2EhgZfga4N5uu2jBiXPsA86Buz_I',
-  //   };
-  //   final body = jsonEncode({
-  //     'notification': {
-  //       'title': title,
-  //       'body': message,
-  //       'icon': '@mipmap/logo2',
-  //       'sound': 'default',
-  //       'priority': 'high',
-  //     },
-  //     'registration_ids':
-  //         deviceTokens, // set the registration IDs to an array of device tokens
-  //   });
-  //   final response = await http.post(url, headers: headers, body: body);
-  //   print(response.statusCode);
-  //   print('message: $message');
-  //   if (response.statusCode != 200) {
-  //     throw Exception('Failed to send notification.');
-  //   }
-  // }
-
-  // @override
-  // Future<void> setState(VoidCallback fn) async {
-  //   // TODO: implement setState
-  //   super.setState(fn);
-  //   show = (widget.id == '') ? false : true;
-  // }
+  
 
   final MapController _mapController = MapController();
   CollectionReference requests =
@@ -141,15 +109,8 @@ class _HomePageDriverState extends State<driverHome> {
     return driverQuerySnapshot;
   }
 
-  Future<String> getUserName() async {
-    final user = FirebaseAuth.instance.currentUser;
-    final riderQuerySnapshot = await FirebaseFirestore.instance
-        .collection('Drivers')
-        .doc(user!.uid)
-        .get();
-    final name = riderQuerySnapshot.data()!['name'] as String;
-    return name;
-  }
+  final DriverEmail = FirebaseAuth.instance.currentUser!.email;
+ 
 
   String Email = '';
 
@@ -756,23 +717,22 @@ class _HomePageDriverState extends State<driverHome> {
                                     destination_location =
                                         request['destination_location'];
                                     price = request['price'];
+                                    print(
+                                        "sender token is ${request['sendertoken']}");
                                   });
                                   await makeRide();
                                   // await requests
                                   //     .doc('${widget.id}')
                                   //     .update({'status': 'waiting'});
-                                  // final tokenQuery = await getToken();
-                                  // final data = tokenQuery.data();
-                                  // setState(() {
-                                  //   token = data!['token'];
-                                  // });
-                                  final driverName = await getUserName();
+                                 
+                                 
+                                  
 
                                   var api = API();
                                   api.AcceptOrderMessage(
                                       request['sendertoken'],
                                       'Driver Response',
-                                      'Order Accepted By ${driverName}');
+                                      'Order Accepted By ${DriverEmail}');
                                 },
                                 child: Container(
                                   margin: EdgeInsets.all(5),
