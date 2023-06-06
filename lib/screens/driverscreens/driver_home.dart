@@ -24,6 +24,7 @@ import 'package:geoflutterfire2/geoflutterfire2.dart';
 
 class driverHome extends StatefulWidget {
   // const driverHome({super.key});
+
   final String id;
   String image = '', source = '', distnation = '', price = '', distance = '';
 
@@ -64,8 +65,6 @@ class _HomePageDriverState extends State<driverHome> {
         .get();
     return snapshot.data();
   }
-
-  
 
   final MapController _mapController = MapController();
   CollectionReference requests =
@@ -110,7 +109,6 @@ class _HomePageDriverState extends State<driverHome> {
   }
 
   final DriverEmail = FirebaseAuth.instance.currentUser!.email;
- 
 
   String Email = '';
 
@@ -217,6 +215,7 @@ class _HomePageDriverState extends State<driverHome> {
     }
   }
 
+  bool isTripStarted = false;
   String source_location = '';
   String destination_location = '';
   String price = '';
@@ -295,6 +294,7 @@ class _HomePageDriverState extends State<driverHome> {
       });
       readrequest();
     }
+
     fetchData();
     print(Email);
 
@@ -724,9 +724,6 @@ class _HomePageDriverState extends State<driverHome> {
                                   // await requests
                                   //     .doc('${widget.id}')
                                   //     .update({'status': 'waiting'});
-                                 
-                                 
-                                  
 
                                   var api = API();
                                   api.AcceptOrderMessage(
@@ -735,24 +732,30 @@ class _HomePageDriverState extends State<driverHome> {
                                       'Order Accepted By ${DriverEmail}');
                                 },
                                 child: Container(
-                                  margin: EdgeInsets.all(5),
-                                  alignment: Alignment.center,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.circular(6),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 10,
-                                        )
-                                      ]),
-                                  child: const Text('Accept Order',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      )),
-                                ),
+                                    margin: EdgeInsets.all(5),
+                                    alignment: Alignment.center,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.circular(6),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.1),
+                                            blurRadius: 10,
+                                          )
+                                        ]),
+                                    child: isTripStarted == false
+                                        ? const Text('Accept Order',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ))
+                                        : const Text('End Trip',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ))),
                               ),
                             ],
                           ),
