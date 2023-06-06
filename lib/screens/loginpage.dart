@@ -7,7 +7,7 @@ import 'package:hantourgo/homePage.dart';
 import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
 import 'package:hantourgo/sendNotification/SenderActor.dart';
 import 'package:hantourgo/sendNotification/firebaseFunction.dart';
-
+import 'package:hantourgo/forgetPassword/enterphone.dart';
 import '../button.dart';
 import '../customloginButton/costumloginbutton.dart';
 import '../homepage2.dart';
@@ -129,7 +129,26 @@ class loginpage extends StatelessWidget {
                     ),
                   ),
                 ),
-
+                SizedBox(height: 15.0),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EnterPhoneForgetPassword()),
+                    );
+                  },
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 25),
 
                 // Costumbuttonforlogin('login', 'Home', username!, password!,

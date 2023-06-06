@@ -24,7 +24,7 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
         child: Column(
           children: [
             Container(
-                color: Color.fromARGB(255, 179, 177, 218),
+                color: Color.fromARGB(255, 94, 114, 235),
                 height: MediaQuery.of(context).size.height * 0.11,
                 padding: EdgeInsets.all(10),
                 child: Row(
@@ -34,12 +34,12 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                       color: Color(0x5E72EB),
                     )
                   ],
-                )), //         01094533479
+                )),
             Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.9,
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 179, 177, 218),
+                color: Color.fromARGB(255, 94, 114, 235),
               ),
               child: Column(
                 children: [
@@ -51,14 +51,14 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                         height: MediaQuery.of(context).size.height * 0.6,
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 59, 13, 102),
+                            color: Color.fromARGB(255, 11, 7, 66),
                             borderRadius: BorderRadius.circular(15)),
                         child: Column(
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 60),
                               child: Text(
-                                "Forget Password",
+                                "Forgot Password",
                                 style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
@@ -112,7 +112,7 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                       obscureText: false,
                                       controller: mailController,
                                       decoration: InputDecoration(
-                                          hintText: 'Enter Your Email',
+                                          hintText: 'Enter Your phone number',
                                           border: InputBorder.none,
                                           contentPadding:
                                               const EdgeInsets.all(0),

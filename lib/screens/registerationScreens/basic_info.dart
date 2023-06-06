@@ -199,7 +199,35 @@ class _BasicInfoState extends State<BasicInfo> {
         child: Column(
           children: [
             const SizedBox(height: 16.0),
-            SizedBox(height: 8.0),
+            CircleAvatar(
+              radius: 70.0,
+              backgroundColor: Colors.grey,
+              backgroundImage: AssetImage('assets/login.jpg'),
+            ),
+            const SizedBox(height: 8.0),
+            ElevatedButton(
+              onPressed: () {},
+              //onPressed:()=> uploadImage(_auth.currentUser!.uid,"personal_images"),
+              child: Text(
+                'Add a Photo',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  side: const BorderSide(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
