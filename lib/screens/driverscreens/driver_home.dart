@@ -21,6 +21,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hantourgo/googleMap/calculateDistance.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
+import './controll_trip.dart';
 
 class driverHome extends StatefulWidget {
   // const driverHome({super.key});
@@ -730,6 +731,12 @@ class _HomePageDriverState extends State<driverHome> {
                                       request['sendertoken'],
                                       'Driver Response',
                                       'Order Accepted By ${DriverEmail}');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Trip_controll(id: '${widget.id}')),
+                                  );
                                 },
                                 child: Container(
                                     margin: EdgeInsets.all(5),
