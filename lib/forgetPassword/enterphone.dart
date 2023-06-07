@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:firebase_database/firebase_database.dart';
 
+import '../screens/loginpage.dart';
+
 class EnterPhoneForgetPassword extends StatefulWidget {
   const EnterPhoneForgetPassword({super.key});
 
@@ -186,6 +188,14 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                         ),
                                       ),
                                       InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    loginpage()),
+                                          );
+                                        },
                                         child: Container(
                                           width:
                                               MediaQuery.of(context).size.width,

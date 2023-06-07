@@ -377,16 +377,22 @@ class _HomePageDriverState extends State<driverHome> {
       onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: Colors.white,
-
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Welcom Back',
+          ),
+          backgroundColor: Color.fromARGB(255, 11, 7, 66),
+        ),
         drawer: Drawer(
-          surfaceTintColor: Colors.green,
+          surfaceTintColor: Color.fromARGB(255, 94, 114, 235),
           child: Column(
             children: [
               Stack(
                 children: [
                   Container(
                     height: MediaQuery.of(context).size.height / 2,
-                    color: Colors.green,
+                    color: Color.fromARGB(255, 94, 114, 235),
                   ),
                   Column(
                     children: [
@@ -498,7 +504,7 @@ class _HomePageDriverState extends State<driverHome> {
                 onTap: () {
                   print('logout');
                   FirebaseAuth.instance.signOut();
-                  Navigator.pushNamed(context, 'SplashScreen');
+                  Navigator.pushNamed(context, 'login');
                 },
                 child: Container(
                   margin: const EdgeInsets.all(10),
@@ -687,7 +693,8 @@ class _HomePageDriverState extends State<driverHome> {
                                                   },
                                                   icon: Icon(
                                                     Icons.phone,
-                                                    color: Colors.green,
+                                                    color: Color.fromARGB(
+                                                        255, 94, 114, 235),
                                                   ),
                                                 )
                                               ],
@@ -736,7 +743,8 @@ class _HomePageDriverState extends State<driverHome> {
                                     alignment: Alignment.center,
                                     height: 50,
                                     decoration: BoxDecoration(
-                                        color: Colors.green,
+                                        color:
+                                            Color.fromARGB(255, 94, 114, 235),
                                         borderRadius: BorderRadius.circular(6),
                                         boxShadow: [
                                           BoxShadow(

@@ -10,14 +10,17 @@ class signupscreen extends StatelessWidget {
   CollectionReference Riders = FirebaseFirestore.instance.collection('Riders');
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-
   //set new Rider
-  Future<void> addRider(String name,String phone,String email ) {
+  Future<void> addRider(String name, String phone, String email) {
     // Call the user's CollectionReference to add a new user
-    return Riders.doc(auth.currentUser!.uid).set({
-      'name':name,'phone':phone,'email':email,'personal_photo':'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png'
-    })
-
+    return Riders.doc(auth.currentUser!.uid)
+        .set({
+          'name': name,
+          'phone': phone,
+          'email': email,
+          'personal_photo':
+              'https://crda.ap.gov.in/apcrdadocs/EMPLOYE%20PHOTOS/user.png'
+        })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }
@@ -34,11 +37,10 @@ class signupscreen extends StatelessWidget {
     return null;
   }
 
-
   @override
   Widget build(BuildContext context) {
     CollectionReference users =
-    FirebaseFirestore.instance.collection('Passenger_registeration');
+        FirebaseFirestore.instance.collection('Passenger_registeration');
     TextEditingController nameController = TextEditingController();
     TextEditingController PhoneController = TextEditingController();
     TextEditingController emailController = TextEditingController();
@@ -66,11 +68,11 @@ class signupscreen extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               ElevatedButton(
-                onPressed: (){},
+                onPressed: () {},
                 //onPressed:()=> uploadImage(_auth.currentUser!.uid,"personal_images"),
-                child:  Text(
+                child: Text(
                   'Add a Photo',
-                  style:  TextStyle(
+                  style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -119,7 +121,6 @@ class signupscreen extends StatelessWidget {
                       controller: PhoneController,
                       text: 'Phone Number',
                       validator: validatePhoneNumber,
-
                       obscure: false,
                       textInputType: TextInputType.phone,
                     ),
@@ -139,12 +140,12 @@ class signupscreen extends StatelessWidget {
                           );
                           if (value!.isEmpty) {
                             return 'Please enter some text';
-                          }if(!regex.hasMatch(value.trim())){
+                          }
+                          if (!regex.hasMatch(value.trim())) {
                             return 'Please Enter Valid Email address';
                           }
                           return null;
-                        }
-                    ),
+                        }),
                     const SizedBox(height: 25),
                     widgets(
                       data: widgets.data,
@@ -154,7 +155,7 @@ class signupscreen extends StatelessWidget {
                       obscure: true,
                       textInputType: TextInputType.text,
                       validator: (value) {
-                        if (value!.length<6) {
+                        if (value!.length < 6) {
                           return 'Too Short Password';
                         }
                         return null;
@@ -169,9 +170,10 @@ class signupscreen extends StatelessWidget {
                       obscure: true,
                       textInputType: TextInputType.text,
                       validator: (value) {
-                        if (value!.length<6) {
+                        if (value!.length < 6) {
                           return 'Too Short Password';
-                        }if(value!=passwordController.text){
+                        }
+                        if (value != passwordController.text) {
                           return 'Password does not match.';
                         }
                         return null;
@@ -181,7 +183,7 @@ class signupscreen extends StatelessWidget {
                     SizedBox(height: 25),
                     //button('Sign Up here', 'basicinfo'),
                     InkWell(
-                      onTap: ()async {
+                      onTap: () async {
                         // try{
                         //   if(_formKey.currentState!.validate()){
                         //     // print(nameController.text);
@@ -200,44 +202,47 @@ class signupscreen extends StatelessWidget {
                         //   print(e);
                         //
                         // }
-                        if(_formKey.currentState!.validate()){
+                        if (_formKey.currentState!.validate()) {
                           try {
-                            final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                            final credential = await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
                             );
-                            addRider(nameController.text.trim(),PhoneController.text.trim(),emailController.text.trim());
-
+                            addRider(
+                                nameController.text.trim(),
+                                PhoneController.text.trim(),
+                                emailController.text.trim());
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'weak-password') {
                               ScaffoldMessenger.of(context).showSnackBar(
-                               const  SnackBar(
-                                  content: Text('The password provided is too weak.'),
+                                const SnackBar(
+                                  content: Text(
+                                      'The password provided is too weak.'),
                                 ),
                               );
 
                               print('The password provided is too weak.');
                             } else if (e.code == 'email-already-in-use') {
                               ScaffoldMessenger.of(context).showSnackBar(
-                             const    SnackBar(
-                                  content: Text('The account already exists for that email.'),
+                                const SnackBar(
+                                  content: Text(
+                                      'The account already exists for that email.'),
                                 ),
                               );
-                              print('The account already exists for that email.');
+                              print(
+                                  'The account already exists for that email.');
                             }
                           } catch (e) {
                             print(e);
                           }
                         }
-
-
-
                       },
                       child: Container(
                         alignment: Alignment.center,
                         height: 55,
                         decoration: BoxDecoration(
-                            color:const Color(0xFF0B0742),
+                            color: const Color(0xFF0B0742),
                             borderRadius: BorderRadius.circular(6),
                             boxShadow: [
                               BoxShadow(
@@ -250,7 +255,8 @@ class signupscreen extends StatelessWidget {
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                             )),
-                      ),)
+                      ),
+                    )
                   ],
                 ),
               ),
