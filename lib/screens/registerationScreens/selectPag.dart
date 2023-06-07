@@ -32,29 +32,28 @@ class selectPag extends StatelessWidget {
                             Navigator.of(context).pushNamed('driverregister');
                           },
                           child: ListTile(
-                            title: Text('Driver',style: TextStyle(color: Colors.white)),
-                            trailing: Icon(Icons.arrow_forward, color: Colors.white),
+                            title: Text('Driver',
+                                style: TextStyle(color: Colors.white)),
+                            trailing:
+                                Icon(Icons.arrow_forward, color: Colors.white),
                           ),
                         ),
                         SizedBox(height: 25.0),
-
                         ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, 'signup');
                           },
                           child: ListTile(
-                            title: Text('Passenger', style: TextStyle(color: Colors.white)),
-                            trailing: Icon(Icons.arrow_forward, color: Colors.white),
+                            title: Text('Passenger',
+                                style: TextStyle(color: Colors.white)),
+                            trailing:
+                                Icon(Icons.arrow_forward, color: Colors.white),
                           ),
-
                         ),
-
                       ],
                     ),
-
                   ),
                   //  Divider(),
-
                 ],
               )
               /*       Column(

@@ -16,20 +16,19 @@ class _RegistrationPageState extends State<criminal_record> {
   String _idCardNumber = '';
   String _idCardImagePath = '';
   File? image; // add ? for null safety
-  final FirebaseAuth _auth=FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   CollectionReference criminal =
-  FirebaseFirestore.instance.collection('CriminalRecords');
-
+      FirebaseFirestore.instance.collection('CriminalRecords');
 
   final imagepicker = ImagePicker();
-  String downloadUrl="";
+  String downloadUrl = "";
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<void> uploadImage(String currentId,String folder) async {
+  Future<void> uploadImage(String currentId, String folder) async {
     final pickedImage =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
-      image =File(pickedImage!.path);
+      image = File(pickedImage!.path);
     });
 
     if (pickedImage == null) {
@@ -53,13 +52,11 @@ class _RegistrationPageState extends State<criminal_record> {
       // });
     }
   }
-  Future<void> upload_criminal() async{
+
+  Future<void> upload_criminal() async {
     return await criminal
         .doc(_auth.currentUser!.uid)
-        .set({
-      'criminalimage' : downloadUrl
-
-    })
+        .set({'criminalimage': downloadUrl})
         .then((value) => print("Data updated"))
         .catchError((error) => print("Failed to add user: $error"));
   }
@@ -74,7 +71,7 @@ class _RegistrationPageState extends State<criminal_record> {
       body: SingleChildScrollView(
         child: Padding(
           padding:
-          const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
+              const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -93,9 +90,8 @@ class _RegistrationPageState extends State<criminal_record> {
               ),
               SizedBox(height: 32.0),
               ElevatedButton(
-                onPressed: (){
-
-                  uploadImage(_auth.currentUser!.uid, 'criminal_report_images') ;
+                onPressed: () {
+                  uploadImage(_auth.currentUser!.uid, 'criminal_report_images');
                 },
                 child: Text(
                   'Add a Photo',
@@ -123,11 +119,10 @@ class _RegistrationPageState extends State<criminal_record> {
                     if (image != null) {
                       upload_criminal();
                       Navigator.of(context).pushNamed('id');
-                    }
-                    else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Piease choose an for criminal record')));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content:
+                              Text('Piease choose an for criminal record')));
                     }
                   },
                   child: Text(

@@ -24,7 +24,7 @@ class driver_register extends StatelessWidget {
                         title: Text('Basic info',
                             style: TextStyle(color: Colors.black)),
                         trailing:
-                        Icon(Icons.arrow_forward, color: Colors.black),
+                            Icon(Icons.arrow_forward, color: Colors.black),
                         onTap: () {
                           Navigator.pushNamed(context, 'basicinfo');
                         },
@@ -34,7 +34,7 @@ class driver_register extends StatelessWidget {
                         title: Text('Driver license',
                             style: TextStyle(color: Colors.black)),
                         trailing:
-                        Icon(Icons.arrow_forward, color: Colors.black),
+                            Icon(Icons.arrow_forward, color: Colors.black),
                         onTap: () {
                           Navigator.pushNamed(context, 'driverlicense');
                         },
@@ -44,7 +44,7 @@ class driver_register extends StatelessWidget {
                         title: Text('Criminal record',
                             style: TextStyle(color: Colors.black)),
                         trailing:
-                        Icon(Icons.arrow_forward, color: Colors.black),
+                            Icon(Icons.arrow_forward, color: Colors.black),
                         onTap: () {
                           Navigator.pushNamed(context, 'criminal');
                         },
@@ -54,7 +54,7 @@ class driver_register extends StatelessWidget {
                         title: Text('Certificate of vehicle registration',
                             style: TextStyle(color: Colors.black)),
                         trailing:
-                        Icon(Icons.arrow_forward, color: Colors.black),
+                            Icon(Icons.arrow_forward, color: Colors.black),
                         onTap: () {
                           Navigator.pushNamed(context, 'certificate');
                         },
@@ -64,7 +64,7 @@ class driver_register extends StatelessWidget {
                         title: Text('National ID',
                             style: TextStyle(color: Colors.black)),
                         trailing:
-                        Icon(Icons.arrow_forward, color: Colors.black),
+                            Icon(Icons.arrow_forward, color: Colors.black),
                         onTap: () {
                           Navigator.pushNamed(context, 'id');
                         },

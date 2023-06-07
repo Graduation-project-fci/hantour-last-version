@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hantourgo/firebase_Services/authentication.dart';
-import 'package:hantourgo/sendNotification/SenderActor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -17,13 +16,6 @@ class BasicInfo extends StatefulWidget {
 }
 
 class _BasicInfoState extends State<BasicInfo> {
-  TextEditingController nameC = TextEditingController();
-  TextEditingController birthC = TextEditingController();
-  TextEditingController phoneC = TextEditingController();
-  TextEditingController AddressC = TextEditingController();
-  TextEditingController EmailC = TextEditingController();
-  TextEditingController PasswordC = TextEditingController();
-  TextEditingController ConfirmPasswordC = TextEditingController();
   String? validatePhoneNumber(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your phone number';
@@ -62,69 +54,25 @@ class _BasicInfoState extends State<BasicInfo> {
     }
   }
 
-  Future<void> insertDriverData(
-      String email, String name, String phone, String token) async {
-    print('inser driver data ok');
-    await Drivers.add(
-            {'email': email, 'name': name, 'phone': phone, 'token': token})
-        .then((value) => print("Driver Data updated"))
+  Future<void> uploadBasicInfo() {
+    return basicInfo
+        .doc(_auth.currentUser!.uid)
+        .set({
+          'ImageLink': downloadUrl,
+          'Phone': _dobController.text.trim(),
+          'address': _addressController.text.trim()
+        })
+        .then((value) => print("Data updated"))
         .catchError((error) => print("Failed to add user: $error"));
-  }
-
-  Future<void> uploadBasicInfo(String email, String phone, String name) async {
-    await basicInfo
-        .doc(email)
-        .set({'email': email, 'phone': phone, 'name': name})
-        .then((value) => print("Data updated basic info"))
-        .catchError((error) => print("Failed to add user: $error"));
-  }
-
-  // Future<void> AddDriverDataWithID_As_decument(
-  //     String ID, String Email, String name, String phone) async {
-  //   await Drivers.doc(ID)
-  //       .set({'name': name, 'phone': phone, 'email': Email})
-  //       .then((value) => print("Data inserted into Drivers"))
-  //       .catchError((error) =>
-  //           print("Failed to add Driver to drivers collection: $error"));
-  // }
-
-  String Id = 'emptyString';
-  Future<String?> getCurrentUserToken() async {
-    var token = await firebaseMessaging.getToken();
-    return token;
-  }
-
-  void SignUpDriver(String Email, String password) async {
-    try {
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: Email,
-        password: password,
-      );
-      print(credential.user!.uid);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
   }
 
   CollectionReference basicInfo =
       FirebaseFirestore.instance.collection('basicInfo');
-  CollectionReference Drivers =
-      FirebaseFirestore.instance.collection('Drivers');
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-
-  String _token = '';
-  //  firebaseMessaging.getToken().then((value) => _token=value! );
 
   File? image; // add ? for null safety
   final FirebaseStorage storage = FirebaseStorage.instance;
@@ -132,33 +80,33 @@ class _BasicInfoState extends State<BasicInfo> {
   final imagepicker = ImagePicker();
   String downloadUrl = '';
 
-  // Future<void> uploadImage(String currentId, String folder) async {
-  //   final pickedImage =
-  //       await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   setState(() {
-  //     image = File(pickedImage!.path);
-  //   });
+  Future<void> uploadImage(String currentId, String folder) async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = File(pickedImage!.path);
+    });
 
-  //   if (pickedImage == null) {
-  //     print("No Image chosen yet"); // replace Text with print
-  //   } else {
-  //     final file = File(pickedImage.path);
-  //     final reference = storage.ref().child('$folder/$currentId');
-  //     final uploadTask = reference.putFile(file);
-  //     final snapshot = await uploadTask.whenComplete(() {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Photo Uploaded Successfully '),
-  //         ),
-  //       );
-  //     });
-  //     downloadUrl = await snapshot.ref.getDownloadURL();
+    if (pickedImage == null) {
+      print("No Image chosen yet"); // replace Text with print
+    } else {
+      final file = File(pickedImage.path);
+      final reference = storage.ref().child('$folder/$currentId');
+      final uploadTask = reference.putFile(file);
+      final snapshot = await uploadTask.whenComplete(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Photo Uploaded Successfully '),
+          ),
+        );
+      });
+      downloadUrl = await snapshot.ref.getDownloadURL();
 
-  //     // setState(() {
-  //     //   image = File(pickedImage.path);
-  //     // });
-  //   }
-  // }
+      // setState(() {
+      //   image = File(pickedImage.path);
+      // });
+    }
+  }
 
   File? image1; // add ? for null safety
 
@@ -183,16 +131,16 @@ class _BasicInfoState extends State<BasicInfo> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController dateController = TextEditingController();
+    TextEditingController PhoneController = TextEditingController();
+    TextEditingController addressController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+    TextEditingController ConfpasswordController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: const Text('Registration Page'),
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, 'driverregister');
-          },
-          child: Icon(Icons.arrow_back_ios),
-        ),
         backgroundColor: const Color(0xFF0B0742),
       ),
       body: SingleChildScrollView(
@@ -204,9 +152,11 @@ class _BasicInfoState extends State<BasicInfo> {
               backgroundColor: Colors.grey,
               backgroundImage: AssetImage('assets/login.jpg'),
             ),
-            const SizedBox(height: 8.0),
+            SizedBox(height: 8.0),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                uploadImage(_auth.currentUser!.uid, 'personal_images');
+              },
               //onPressed:()=> uploadImage(_auth.currentUser!.uid,"personal_images"),
               child: Text(
                 'Add a Photo',
@@ -220,20 +170,19 @@ class _BasicInfoState extends State<BasicInfo> {
                 primary: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
-                  side: const BorderSide(
+                  side: BorderSide(
                     color: Colors.grey,
                     width: 1.0,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
                   widgets(
-                    controller: nameC,
+                    controller: nameController,
                     text: 'Full Name',
                     obscure: false,
                     textInputType: TextInputType.text,
@@ -241,7 +190,7 @@ class _BasicInfoState extends State<BasicInfo> {
                   ),
                   SizedBox(height: 16.0),
                   widgets(
-                    controller: birthC,
+                    controller: dateController,
                     text: 'Date of Birth (MM/DD/YYYY)',
                     obscure: false,
                     textInputType: TextInputType.phone,
@@ -249,7 +198,7 @@ class _BasicInfoState extends State<BasicInfo> {
                   ),
                   SizedBox(height: 16.0),
                   widgets(
-                    controller: phoneC,
+                    controller: PhoneController,
                     text: 'Phone number',
                     obscure: false,
                     textInputType: TextInputType.phone,
@@ -257,7 +206,7 @@ class _BasicInfoState extends State<BasicInfo> {
                   ),
                   SizedBox(height: 16.0),
                   widgets(
-                    controller: AddressC,
+                    controller: addressController,
                     text: 'Address',
                     obscure: false,
                     textInputType: TextInputType.streetAddress,
@@ -265,7 +214,7 @@ class _BasicInfoState extends State<BasicInfo> {
                   ),
                   SizedBox(height: 16.0),
                   widgets(
-                    controller: EmailC,
+                    controller: emailController,
                     text: 'Email',
                     obscure: false,
                     textInputType: TextInputType.emailAddress,
@@ -273,7 +222,7 @@ class _BasicInfoState extends State<BasicInfo> {
                   ),
                   SizedBox(height: 16.0),
                   widgets(
-                    controller: PasswordC,
+                    controller: passwordController,
                     text: 'Password',
                     obscure: true,
                     textInputType: TextInputType.text,
@@ -281,7 +230,7 @@ class _BasicInfoState extends State<BasicInfo> {
                   ),
                   SizedBox(height: 16.0),
                   widgets(
-                    controller: ConfirmPasswordC,
+                    controller: ConfpasswordController,
                     text: 'Confirm Password',
                     obscure: true,
                     textInputType: TextInputType.text,
@@ -289,24 +238,13 @@ class _BasicInfoState extends State<BasicInfo> {
                   ),
                   SizedBox(height: 32.0),
                   ElevatedButton(
-                    onPressed: () async {
-                      _token = (await getCurrentUserToken())!;
+                    onPressed: () {
+                      if (_dobController.text.trim() != "" &&
+                          _addressController.text.trim() != "") {
+                        uploadBasicInfo();
+                      }
 
-                      // print(EmailC.text.trim());
-                      // print(PasswordC.text.trim());
-                      // if (_dobController.text.trim() != "" &&
-                      //     _addressController.text.trim() != "") {
-                      SignUpDriver(
-                          EmailC.text.toString(), PasswordC.text.toString());
-                      uploadBasicInfo(EmailC.text.toString(),
-                          phoneC.text.toString(), nameC.text.toString());
-                      insertDriverData(
-                          EmailC.text.toString(),
-                          nameC.text.toString(),
-                          phoneC.text.toString(),
-                          _token.toString());
-                      print(_token.toString());
-                      // Navigator.of(context).pushNamed('driverlicense');
+                      Navigator.of(context).pushNamed('driverlicense');
                     },
                     child: Text(
                       'Next',
