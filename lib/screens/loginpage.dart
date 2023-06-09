@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:hantourgo/ANIMATION/showDialog.dart';
 import 'package:hantourgo/homePage.dart';
 import 'package:hantourgo/screens/registerationScreens/selectPag.dart';
 import 'package:hantourgo/sendNotification/SenderActor.dart';
@@ -175,6 +176,16 @@ class loginpage extends StatelessWidget {
                           var token = await firebaseMessaging.getToken();
                           if (role) {
                             retrieveFCMToken('DriversTokens', token!);
+                            showDialog(
+                                context: context,
+                                builder: ((context) {
+                                  return AnimatedErrorDialog(
+                                    errorMessage:
+                                        "Invalid Username or Password",
+                                    ErrorTitle: "Error",
+                                    icon: Icons.error_outline,
+                                  );
+                                }));
                             Navigator.pushNamed(context, 'Driverhome');
                           } else {
                             retrieveFCMToken('UserTokens', token!);

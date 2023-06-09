@@ -738,12 +738,12 @@ class _HomePageDriverState extends State<driverHome> {
                                       request['sendertoken'],
                                       'Driver Response',
                                       'Order Accepted By ${DriverEmail}');
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            Trip_controll(id: '${widget.id}')),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           Trip_controll(id: '${widget.id}')),
+                                  // );
                                 },
                                 child: Container(
                                     margin: EdgeInsets.all(5),

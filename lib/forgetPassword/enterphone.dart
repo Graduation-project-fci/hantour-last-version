@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hantourgo/ANIMATION/showDialog.dart';
 import 'package:hantourgo/sendNotification/SenderActor.dart';
 import 'package:hantourgo/sendNotification/api.dart';
 import 'dart:async';
@@ -134,30 +135,54 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                       ),
                                       InkWell(
                                         onTap: () async {
-                                          if (mailController.text
-                                              .trim()
-                                              .isNotEmpty) {
-                                            await FirebaseAuth.instance
-                                                .sendPasswordResetEmail(
-                                                    email: mailController.text
-                                                        .trim());
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                    'reset Password Email sent Successfully'),
-                                              ),
-                                            );
-                                            Navigator.pushNamed(
-                                                context, "login");
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                    'You Must Enter valid Email address'),
-                                              ),
-                                            );
+                                          try {
+                                            if (mailController.text
+                                                .trim()
+                                                .isNotEmpty) {
+                                              await FirebaseAuth.instance
+                                                  .sendPasswordResetEmail(
+                                                      email: mailController.text
+                                                          .trim());
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'reset Password Email sent Successfully'),
+                                                ),
+                                              );
+                                              showDialog(
+                                                  context: context,
+                                                  builder: ((context) {
+                                                    return AnimatedErrorDialog(
+                                                      errorMessage:
+                                                          "Email Sent Successfully",
+                                                      ErrorTitle: "Successful",
+                                                      icon: Icons
+                                                          .supervised_user_circle,
+                                                    );
+                                                  }));
+                                              // Navigator.pushNamed(
+                                              //     context, "login");
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'You Must Enter valid Email address'),
+                                                ),
+                                              );
+                                            }
+                                          } catch (e) {
+                                            showDialog(
+                                                context: context,
+                                                builder: ((context) {
+                                                  return AnimatedErrorDialog(
+                                                    errorMessage:
+                                                        "Enter Correct Email",
+                                                    ErrorTitle: "Error",
+                                                    icon: Icons.error_outline,
+                                                  );
+                                                }));
                                           }
                                         },
                                         child: Container(

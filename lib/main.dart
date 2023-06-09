@@ -30,7 +30,6 @@ import 'screens/newFile.dart';
 
 import './screens/driverscreens/controll_trip.dart';
 
-
 import 'package:hantourgo/screens/driverscreens/driver_home.dart';
 
 import 'homepage2.dart';
@@ -83,7 +82,6 @@ class MyApp extends StatelessWidget {
         'id': (context) => nationalID(),
         'rating': (context) => rating(),
         'signupDriver': (context) => signupscreenDriver(),
-       
       },
     );
   }
