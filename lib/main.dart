@@ -27,6 +27,7 @@ import 'package:hantourgo/teckets/ticket.dart';
 import 'package:http/http.dart' as http;
 import 'forgetPassword/enterphone.dart';
 import 'screens/newFile.dart';
+import './screens/chat.dart';
 
 import './screens/driverscreens/controll_trip.dart';
 
@@ -61,7 +62,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: fpage(),
+      home: ChatPage(
+        roomId: 'xx',
+      ),
       routes: {
         "SplashScreen": (context) => fpage(),
         'wallet': (context) => mywallet(),

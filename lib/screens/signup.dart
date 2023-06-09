@@ -64,7 +64,7 @@ class signupscreen extends StatelessWidget {
               CircleAvatar(
                 radius: 70.0,
                 backgroundColor: Colors.grey,
-                backgroundImage: AssetImage('assets/login.jpg'),
+                backgroundImage: AssetImage('assets/images/login.jpg'),
               ),
               const SizedBox(height: 8.0),
               ElevatedButton(
@@ -98,166 +98,152 @@ class signupscreen extends StatelessWidget {
               //    fontWeight: FontWeight.w500,),),
               Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  children: [
-                    widgets(
-                      data: widgets.data,
-                      maxlen: 100,
-                      controller: nameController,
-                      text: 'Full Name ',
-                      obscure: false,
-                      textInputType: TextInputType.text,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 15),
-                    widgets(
-                      data: widgets.data,
-                      maxlen: 20,
-                      controller: PhoneController,
-                      text: 'Phone Number',
-                      validator: validatePhoneNumber,
-                      obscure: false,
-                      textInputType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 25),
-                    widgets(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      widgets(
                         data: widgets.data,
                         maxlen: 100,
-                        controller: emailController,
-                        text: 'Email',
+                        controller: nameController,
+                        text: 'Full Name ',
                         obscure: false,
-                        textInputType: TextInputType.emailAddress,
+                        textInputType: TextInputType.text,
                         validator: (value) {
-                          final RegExp regex = RegExp(
-                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                            caseSensitive: false,
-                            multiLine: false,
-                          );
                           if (value!.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          if (!regex.hasMatch(value.trim())) {
-                            return 'Please Enter Valid Email address';
+                            return 'Please enter your name';
                           }
                           return null;
-                        }),
-                    const SizedBox(height: 25),
-                    widgets(
-                      data: widgets.data,
-                      maxlen: 8,
-                      controller: passwordController,
-                      text: 'Password',
-                      obscure: true,
-                      textInputType: TextInputType.text,
-                      validator: (value) {
-                        if (value!.length < 6) {
-                          return 'Too Short Password';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 25),
-                    widgets(
-                      data: widgets.data,
-                      maxlen: 8,
-                      controller: ConfpasswordController,
-                      text: 'Confirm Password',
-                      obscure: true,
-                      textInputType: TextInputType.text,
-                      validator: (value) {
-                        if (value!.length < 6) {
-                          return 'Too Short Password';
-                        }
-                        if (value != passwordController.text) {
-                          return 'Password does not match.';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    SizedBox(height: 25),
-                    //button('Sign Up here', 'basicinfo'),
-                    InkWell(
-                      onTap: () async {
-                        // try{
-                        //   if(_formKey.currentState!.validate()){
-                        //     // print(nameController.text);
-                        //     // users
-                        //     //     .add({
-                        //     //   'fullname': nameController.text,
-                        //     //   'email': emailController.text,
-                        //     //   'phone_number': PhoneController.text,
-                        //     //   'password': passwordController.text
-                        //     // })
-                        //     //     .then((value) => print('User added'))
-                        //     //     .catchError(
-                        //     //         (error) => print('Failed to add user: $error'));
-                        //   }
-                        // }catch(e){
-                        //   print(e);
-                        //
-                        // }
-                        if (_formKey.currentState!.validate()) {
-                          try {
-                            final credential = await FirebaseAuth.instance
-                                .createUserWithEmailAndPassword(
-                              email: emailController.text.trim(),
-                              password: passwordController.text.trim(),
-                            );
-                            addRider(
-                                nameController.text.trim(),
-                                PhoneController.text.trim(),
-                                emailController.text.trim());
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'weak-password') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'The password provided is too weak.'),
-                                ),
-                              );
-
-                              print('The password provided is too weak.');
-                            } else if (e.code == 'email-already-in-use') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'The account already exists for that email.'),
-                                ),
-                              );
-                              print(
-                                  'The account already exists for that email.');
-                            }
-                          } catch (e) {
-                            print(e);
-                          }
-                        }
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 55,
-                        decoration: BoxDecoration(
-                            color: const Color(0xFF0B0742),
-                            borderRadius: BorderRadius.circular(6),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 10,
-                              )
-                            ]),
-                        child: const Text('Sign Up',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            )),
+                        },
                       ),
-                    )
-                  ],
+                      const SizedBox(height: 15),
+                      widgets(
+                        data: widgets.data,
+                        maxlen: 20,
+                        controller: PhoneController,
+                        text: 'Phone Number',
+                        validator: validatePhoneNumber,
+                        obscure: false,
+                        textInputType: TextInputType.phone,
+                      ),
+                      const SizedBox(height: 25),
+                      widgets(
+                          data: widgets.data,
+                          maxlen: 100,
+                          controller: emailController,
+                          text: 'Email',
+                          obscure: false,
+                          textInputType: TextInputType.emailAddress,
+                          validator: (value) {
+                            final RegExp regex = RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              caseSensitive: false,
+                              multiLine: false,
+                            );
+                            if (value!.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            if (!regex.hasMatch(value.trim())) {
+                              return 'Please Enter Valid Email address';
+                            }
+                            return null;
+                          }),
+                      const SizedBox(height: 25),
+                      widgets(
+                        data: widgets.data,
+                        maxlen: 8,
+                        controller: passwordController,
+                        text: 'Password',
+                        obscure: true,
+                        textInputType: TextInputType.text,
+                        validator: (value) {
+                          if (value!.length < 6) {
+                            return 'Too Short Password';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 25),
+                      widgets(
+                        data: widgets.data,
+                        maxlen: 8,
+                        controller: ConfpasswordController,
+                        text: 'Confirm Password',
+                        obscure: true,
+                        textInputType: TextInputType.text,
+                        validator: (value) {
+                          if (value!.length < 6) {
+                            return 'Too Short Password';
+                          }
+                          if (value != passwordController.text) {
+                            return 'Password does not match.';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      SizedBox(height: 25),
+                      //button('Sign Up here', 'basicinfo'),
+                      InkWell(
+                        onTap: () async {
+                          
+                          if (_formKey.currentState!.validate()) {
+                            try {
+                              final credential = await FirebaseAuth.instance
+                                  .createUserWithEmailAndPassword(
+                                email: emailController.text.trim(),
+                                password: passwordController.text.trim(),
+                              );
+                              addRider(
+                                  nameController.text.trim(),
+                                  PhoneController.text.trim(),
+                                  emailController.text.trim());
+                            } on FirebaseAuthException catch (e) {
+                              if (e.code == 'weak-password') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'The password provided is too weak.'),
+                                  ),
+                                );
+
+                                print('The password provided is too weak.');
+                              } else if (e.code == 'email-already-in-use') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'The account already exists for that email.'),
+                                  ),
+                                );
+                                print(
+                                    'The account already exists for that email.');
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 55,
+                          decoration: BoxDecoration(
+                              color: const Color(0xFF0B0742),
+                              borderRadius: BorderRadius.circular(6),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 10,
+                                )
+                              ]),
+                          child: const Text('Sign Up',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              )),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],
