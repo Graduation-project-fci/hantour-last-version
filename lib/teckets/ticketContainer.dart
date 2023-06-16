@@ -126,7 +126,7 @@ class _ticketCardState extends State<ticketCard> {
             topRight: Radius.circular(10),
             bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(10)),
-        color: Colors.blue,
+        color: Colors.red,
       ),
     );
   }

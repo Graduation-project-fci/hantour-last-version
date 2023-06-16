@@ -46,6 +46,11 @@ class _OrdersState extends State<Orders> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Orders"),
+          backgroundColor: Color.fromARGB(255, 9, 67, 114),
+        ),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('Requests')
@@ -88,6 +93,7 @@ class _OrdersState extends State<Orders> {
                         // mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CircleAvatar(
                                 radius: 30,
@@ -103,7 +109,16 @@ class _OrdersState extends State<Orders> {
                                   ),
                                 ),
                               ),
-                              Text('${document['name']}')
+                              Container(
+                                margin: EdgeInsets.only(right: 25),
+                                child: Text(
+                                  '${document['name']}',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
                             ],
                           ),
                           Expanded(
@@ -141,7 +156,7 @@ class _OrdersState extends State<Orders> {
                                       height: 50,
                                       padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
-                                          color: Colors.amber,
+                                          color: Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(25)),
                                       child: Text(
@@ -167,6 +182,7 @@ class _OrdersState extends State<Orders> {
                                   "Distance :  meter",
                                   style: TextStyle(
                                       fontSize: 20,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
@@ -174,7 +190,7 @@ class _OrdersState extends State<Orders> {
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.orange),
+                                      color: Colors.white),
                                 ),
                               ],
                             ),
@@ -202,7 +218,7 @@ class _OrdersState extends State<Orders> {
                             topRight: Radius.circular(10),
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10)),
-                        color: Colors.blue,
+                        color: Color.fromARGB(255, 9, 67, 114),
                       ),
                     ),
                   ),

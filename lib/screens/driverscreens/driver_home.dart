@@ -11,8 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-
-import 'package:hantourgo/constants/constantsize.dart';
 import 'package:hantourgo/profile_pages/user_profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
@@ -617,12 +615,14 @@ class _HomePageDriverState extends State<driverHome> {
                                                     MainAxisAlignment
                                                         .spaceAround,
                                                 children: [
-                                                  Text(
-                                                    "${request['source_location']}",
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                  Container(
+                                                    child: Text(
+                                                      "${request['source_location']}",
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
                                                   ),
                                                 ]),
                                             SizedBox(
@@ -633,12 +633,14 @@ class _HomePageDriverState extends State<driverHome> {
                                                     MainAxisAlignment
                                                         .spaceAround,
                                                 children: [
-                                                  Text(
-                                                    "${request['destination_location']}",
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                  Container(
+                                                    child: Text(
+                                                      "${request['destination_location']}",
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
                                                   ),
                                                 ]),
                                           ],

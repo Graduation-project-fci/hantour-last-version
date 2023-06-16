@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
-import 'package:hantourgo/constants/constantsize.dart';
+
 import 'package:hantourgo/profile_pages/user_profile.dart';
 import 'package:image_picker/image_picker.dart';
 
