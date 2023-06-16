@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hantourgo/ANIMATION/showDialog.dart';
 import 'package:hantourgo/button.dart';
 import 'package:hantourgo/widgets.dart';
 
@@ -186,7 +187,6 @@ class signupscreen extends StatelessWidget {
                       //button('Sign Up here', 'basicinfo'),
                       InkWell(
                         onTap: () async {
-                          
                           if (_formKey.currentState!.validate()) {
                             try {
                               final credential = await FirebaseAuth.instance
@@ -221,6 +221,19 @@ class signupscreen extends StatelessWidget {
                             } catch (e) {
                               print(e);
                             }
+                            showDialog(
+                                context: context,
+                                builder: ((context) {
+                                  return AnimatedErrorDialog(
+                                    errorMessage: "User Created Sucessfully",
+                                    ErrorTitle: "New User Created",
+                                    icon: Icons.login_rounded,
+                                  );
+                                }));
+
+                            Future.delayed(Duration(seconds: 3), () {
+                              Navigator.pushNamed(context, 'login');
+                            });
                           }
                         },
                         child: Container(

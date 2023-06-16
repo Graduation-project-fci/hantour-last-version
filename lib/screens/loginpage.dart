@@ -180,16 +180,30 @@ class loginpage extends StatelessWidget {
                                 context: context,
                                 builder: ((context) {
                                   return AnimatedErrorDialog(
-                                    errorMessage:
-                                        "Invalid Username or Password",
-                                    ErrorTitle: "Error",
-                                    icon: Icons.error_outline,
+                                    errorMessage: "Welcome back",
+                                    ErrorTitle: "Login Succeeded",
+                                    icon: Icons.login_rounded,
                                   );
                                 }));
-                            Navigator.pushNamed(context, 'Driverhome');
+                            // Navigator.pushNamed(context, 'Driverhome');
+                            Future.delayed(Duration(seconds: 3), () {
+                              Navigator.pushNamed(context, 'Driverhome');
+                            });
                           } else {
                             retrieveFCMToken('UserTokens', token!);
-                            Navigator.pushNamed(context, 'HOME2');
+                            showDialog(
+                                context: context,
+                                builder: ((context) {
+                                  return AnimatedErrorDialog(
+                                    errorMessage: "Welcome back",
+                                    ErrorTitle: "Login Succeeded",
+                                    icon: Icons.login_rounded,
+                                  );
+                                }));
+
+                            Future.delayed(Duration(seconds: 3), () {
+                              Navigator.pushNamed(context, 'HOME2');
+                            });
                           }
                           // Navigator.pushNamed(context, 'Home');
                         } on FirebaseAuthException catch (e) {

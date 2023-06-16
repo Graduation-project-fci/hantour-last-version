@@ -123,7 +123,7 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                             controller: mailController,
                                             decoration: InputDecoration(
                                                 hintText:
-                                                    'Enter Your phone number',
+                                                    'Enter Your Email',
                                                 border: InputBorder.none,
                                                 contentPadding:
                                                     const EdgeInsets.all(0),
