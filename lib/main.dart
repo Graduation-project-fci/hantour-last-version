@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:hantourgo/contact.dart';
 import 'package:hantourgo/fpage.dart';
 import 'package:hantourgo/googleMap/googlemap.dart';
 import 'package:hantourgo/homePage.dart';
@@ -32,7 +33,7 @@ import './screens/chat.dart';
 import './screens/driverscreens/controll_trip.dart';
 
 import 'package:hantourgo/screens/driverscreens/driver_home.dart';
-
+import 'contact.dart';
 import 'homepage2.dart';
 
 void main() async {
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: loginpage(), 
+      home: loginpage(),
       routes: {
         "SplashScreen": (context) => fpage(),
         'wallet': (context) => mywallet(),
@@ -83,6 +84,7 @@ class MyApp extends StatelessWidget {
         'id': (context) => nationalID(),
         'rating': (context) => rating(),
         'signupDriver': (context) => signupscreenDriver(),
+        'contact': (context) => contact(),
       },
     );
   }

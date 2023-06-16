@@ -125,7 +125,7 @@ class loginpage extends StatelessWidget {
                         },
                         controller: passwordController,
                         keyboardType: TextInputType.text,
-                        obscureText: false,
+                        obscureText: true,
                         decoration: InputDecoration(
                             hintText: 'password',
                             border: InputBorder.none,

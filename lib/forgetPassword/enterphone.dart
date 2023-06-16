@@ -77,7 +77,7 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 40),
                                       child: Text(
-                                        "Enter your phone number",
+                                        "Enter your Email",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 18,
@@ -112,7 +112,7 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                           child: TextFormField(
                                             validator: (value) {
                                               if (value!.length < 11) {
-                                                return 'Invalid phone number';
+                                                return 'Invalid Email';
                                               }
                                               return null;
                                             },
@@ -122,8 +122,7 @@ class _EnterPhoneForgetPasswordState extends State<EnterPhoneForgetPassword> {
                                             obscureText: false,
                                             controller: mailController,
                                             decoration: InputDecoration(
-                                                hintText:
-                                                    'Enter Your Email',
+                                                hintText: 'Enter Your Email',
                                                 border: InputBorder.none,
                                                 contentPadding:
                                                     const EdgeInsets.all(0),

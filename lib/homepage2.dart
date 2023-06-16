@@ -437,20 +437,25 @@ class _HomePage2State extends State<HomePage2> {
               ),
               Container(
                 margin: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Icon(
-                      Icons.phone,
-                      color: Colors.red,
-                    ),
-                    Text(
-                      'Contact Us',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, 'contact');
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Icon(
+                        Icons.phone,
+                        color: Colors.red,
+                      ),
+                      Text(
+                        'Contact Us',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
